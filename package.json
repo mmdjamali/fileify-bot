@@ -1,0 +1,26 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/boy.ts",
+  "scripts": {
+    "dev": "nodemon src/boy.ts",
+    "start": "node src/boy.ts",
+    "build": "tsc && stc-alias"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@total-typescript/tsconfig": "^1.0.4",
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "grammy": "^1.34.1",
+    "zod": "^3.24.1"
+  }
+}
