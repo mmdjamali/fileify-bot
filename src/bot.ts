@@ -55,7 +55,9 @@ const main = async () => {
     const botName = await bot.api.getMyName()
     logger.info(`${botName.name} started!`.toLocaleLowerCase())
 
-    bot.start()
+    bot.start({
+        drop_pending_updates: true
+    })
 }
 
 main()
