@@ -1,0 +1,1 @@
+start = Merhaba! Düzenlemek istediğin bir dosyan mı var?

@@ -93,12 +93,13 @@ const main = async () => {
         const inlineKeyboard = new InlineKeyboard()
             .text("🇬🇧 English", "language:en")
             .text("🇮🇷 فارسی", "language:fa")
+            .text("🇹🇷 Türkçe", "language:tr")
 
         await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
     })
 
 
-    bot.callbackQuery(["language:fa", "language:en"], async (ctx) => {
+    bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
         await ctx.answerCallbackQuery()
 
         const locale = ctx.callbackQuery.data.split(":")[1]
