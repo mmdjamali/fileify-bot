@@ -9,11 +9,11 @@ export const VIDEO_CONVIRATION_NAME = "video"
 
 export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
     const keyboard = new InlineKeyboard()
-        .text("📹 Video Note", "video:video-note")
+        .text(ctx.t("video-note"), "video:video-note")
         .row()
-        .text("Cancel", "video:cancel")
+        .text(ctx.t("cancel"), "video:cancel")
 
-    const callbackMessage = await ctx.reply("What would you like to do with this video?🤔", {
+    const callbackMessage = await ctx.reply(ctx.t("video"), {
         reply_markup: keyboard
     })
 

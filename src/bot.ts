@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard, InputFile, session } from "grammy"
+import { Bot, Context, InlineKeyboard, InputFile, session } from "grammy"
 import { Conversation, conversations } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
 
@@ -32,8 +32,7 @@ const main = async () => {
         }
     }
 
-    bot.use(session({ initial }))
-    bot.use(conversations())
+    const sessionPlugin = session({ initial, getSessionKey: (ctx: Context) => ctx.from?.id.toString() })
 
     const i18n = new I18n<BotContext>({
         directory: path.join(__dirname, "../locales"),
@@ -45,7 +44,13 @@ const main = async () => {
         }
     })
 
+    bot.use(sessionPlugin)
     bot.use(i18n)
+
+    bot.use(conversations({
+        plugins: [sessionPlugin, i18n]
+    }))
+
 
     bot.callbackQuery("check_membership", async (ctx) => {
         await ctx.answerCallbackQuery()
@@ -73,7 +78,6 @@ const main = async () => {
 
         await ctx.reply(`🎉 Thanks for joining! \nYou're all set to explore. \n\nNeed help? Just type /start anytime! 😊`)
     })
-
     bot.use(ChannelsMiddleware)
 
     bot.use(videoConversation)
@@ -97,7 +101,6 @@ const main = async () => {
 
         await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
     })
-
 
     bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
         await ctx.answerCallbackQuery()

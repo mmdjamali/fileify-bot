@@ -5,8 +5,6 @@ import { BotConversation } from "@/types/conversation"
 import logger from "@/utils/logger"
 import { InputFile } from "grammy"
 
-import { } from "@grammyjs/files"
-
 import { unlinkSync, existsSync } from "fs"
 
 export const videoNote = async (conversation: BotConversation, ctx0: BotContext) => {
@@ -29,20 +27,19 @@ export const videoNote = async (conversation: BotConversation, ctx0: BotContext)
         const file = await ctx0.api.getFile(video?.file_id!)
 
         inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${Date.now()}-video-note.mp4`
-        const msg = await ctx0.reply("Downloading...")
+        const msg = await ctx0.reply(ctx0.t("downloading"))
         await file.download(inputPath)
 
-        await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, "Processing...")
+        await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("processing"))
 
         outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${Date.now()}-video-note.mp4`
         await conversation.external(() => convertVideoToSquare(inputPath!, outputPath!))
 
-        await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, "Uploading...")
+        await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("uploading"))
 
         await ctx0.replyWithVideoNote(new InputFile(outputPath))
 
         await ctx0.api.deleteMessage(ctx0.chat.id, msg.message_id)
-
     } catch (err) {
         logger.error(err)
     } finally {
