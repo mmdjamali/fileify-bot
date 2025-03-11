@@ -102,6 +102,15 @@ const main = async () => {
         await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
     })
 
+    bot.command("language", async (ctx) => {
+        const inlineKeyboard = new InlineKeyboard()
+            .text("🇬🇧 English", "language:en")
+            .text("🇮🇷 فارسی", "language:fa")
+            .text("🇹🇷 Türkçe", "language:tr")
+
+        await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
+    })
+
     bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
         await ctx.answerCallbackQuery()
 
