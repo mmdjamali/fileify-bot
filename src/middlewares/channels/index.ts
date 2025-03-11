@@ -5,6 +5,17 @@ import { InlineKeyboard, NextFunction } from "grammy";
 import { ChatMember } from "grammy/types";
 
 const ChannelsMiddleware = async (ctx: BotContext, next: NextFunction) => {
+    if (!ctx.session.locale) {
+        const inlineKeyboard = new InlineKeyboard()
+            .text("🇬🇧 English", "language:en")
+            .text("🇮🇷 فارسی", "language:fa")
+            .text("🇹🇷 Türkçe", "language:tr")
+
+        await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
+
+        return
+    }
+
     if (env.CHANNELS.length === 0) {
         return next();
     }
@@ -24,15 +35,15 @@ const ChannelsMiddleware = async (ctx: BotContext, next: NextFunction) => {
 
             if (isMember || !env.CHANNELS[idx]) return
 
-            inlineKeyboard.url(`Channel ${idx + 1}`, `t.me/${env.CHANNELS[idx].slice(1)}`).row()
+            inlineKeyboard.url(env.CHANNELS[idx], `t.me/${env.CHANNELS[idx].slice(1)}`).row()
         }
     })
 
     if (isMemberToAll) return next()
 
-    inlineKeyboard.text("Let's Go!", "check_membership")
+    inlineKeyboard.text(ctx.t("check-join"), "check_membership")
 
-    await ctx.reply("You must be a member of the following channels to use this bot\n", {
+    await ctx.reply(ctx.t("join-channels"), {
         reply_markup: inlineKeyboard,
     });
 

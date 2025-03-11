@@ -70,14 +70,58 @@ const main = async () => {
             }
         })
 
+        if (!isMemberToAll) return
+
+        await Promise.all(
+            [
+                ctx.api.deleteMessage(ctx.chat!.id, ctx.callbackQuery.message!.message_id),
+                ctx.reply(ctx.t("start"))
+            ]
+        )
+    })
+
+    bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
         await ctx.answerCallbackQuery()
 
-        if (!isMemberToAll) return
+        const locale = ctx.callbackQuery.data.split(":")[1]
+
+        ctx.session.locale = locale
+        await ctx.i18n.renegotiateLocale()
 
         await ctx.api.deleteMessage(ctx.chat!.id, ctx.callbackQuery.message!.message_id)
 
-        await ctx.reply(`🎉 Thanks for joining! \nYou're all set to explore. \n\nNeed help? Just type /start anytime! 😊`)
+        const channels = await Promise.all<ChatMember | null>(
+            env.CHANNELS.map((channel) => ctx.api.getChatMember(channel, ctx.from!.id).catch(() => null))
+        )
+
+        let isMemberToAll = true;
+
+        const inlineKeyboard = new InlineKeyboard()
+
+        channels.forEach((member, idx) => {
+            if (member) {
+                const isMember = isChannelMember(member.status);
+                isMemberToAll = isMemberToAll && isMember
+
+                if (isMember || !env.CHANNELS[idx]) return
+
+                inlineKeyboard.url(env.CHANNELS[idx], `t.me/${env.CHANNELS[idx].slice(1)}`).row()
+            }
+        })
+
+        if (isMemberToAll) {
+            await ctx.reply(ctx.t("start"))
+            return
+        }
+
+        inlineKeyboard.text(ctx.t("check-join"), "check_membership")
+
+        await ctx.reply(ctx.t("join-channels"), {
+            reply_markup: inlineKeyboard,
+        });
+
     })
+
     bot.use(ChannelsMiddleware)
 
     bot.use(videoConversation)
@@ -109,19 +153,6 @@ const main = async () => {
             .text("🇹🇷 Türkçe", "language:tr")
 
         await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
-    })
-
-    bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
-        await ctx.answerCallbackQuery()
-
-        const locale = ctx.callbackQuery.data.split(":")[1]
-
-        ctx.session.locale = locale
-        await ctx.i18n.renegotiateLocale()
-
-        await ctx.api.deleteMessage(ctx.chat!.id, ctx.callbackQuery.message!.message_id)
-
-        await ctx.reply(ctx.t("start"))
     })
 
     bot.catch(async (err) => {
