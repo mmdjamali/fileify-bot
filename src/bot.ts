@@ -1,25 +1,21 @@
-import { Bot, Context, InlineKeyboard, InputFile, session } from "grammy"
-import { Conversation, conversations } from "@grammyjs/conversations"
+import { Bot, Context, InlineKeyboard, session } from "grammy"
+import { conversations } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
-
-import ffmpeg from "fluent-ffmpeg"
 
 import logger from "@/utils/logger"
 
 import env from "@/config/env"
 
-import { unlinkSync } from "fs"
-
 import { type BotContext } from "@/types/context"
 import { type SessionData } from "@/types/session"
 
-import { convertVideoToSquare } from "@/pkg/ffmpeg"
 import { VIDEO_CONVIRATION_NAME, videoConversation } from "@/conversations/video"
 import ChannelsMiddleware from "./middlewares/channels"
 import { ChatMember } from "grammy/types"
 import { isChannelMember } from "./utils/is-channel-member"
 import { I18n } from "@grammyjs/i18n"
 import path from "path"
+import { redisStorage } from "./db/redis"
 
 const main = async () => {
     const bot = new Bot<BotContext>(env.BOT_TOKEN)
@@ -32,7 +28,12 @@ const main = async () => {
         }
     }
 
-    const sessionPlugin = session({ initial, getSessionKey: (ctx: Context) => ctx.from?.id.toString() })
+    const sessionPlugin = session({
+        initial,
+        getSessionKey: (ctx: Context) => ctx.from?.id.toString(),
+        storage: redisStorage,
+        prefix: "user:"
+    })
 
     const i18n = new I18n<BotContext>({
         directory: path.join(__dirname, "../locales"),
@@ -50,7 +51,6 @@ const main = async () => {
     bot.use(conversations({
         plugins: [sessionPlugin, i18n]
     }))
-
 
     bot.callbackQuery("check_membership", async (ctx) => {
         await ctx.answerCallbackQuery()
