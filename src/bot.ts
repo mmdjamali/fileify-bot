@@ -10,12 +10,14 @@ import { type BotContext } from "@/types/context"
 import { type SessionData } from "@/types/session"
 
 import { VIDEO_CONVIRATION_NAME, videoConversation } from "@/conversations/video"
+import { AUDIO_CONVIRATION_NAME, audioConversation } from "@/conversations/audio"
+
 import ChannelsMiddleware from "@/middlewares/channels"
 import { ChatMember } from "grammy/types"
 import { isChannelMember } from "@/utils/is-channel-member"
 import { I18n } from "@grammyjs/i18n"
 import path from "path"
-import { redisStorage } from "./db/redis"
+import { redisStorage } from "@/db/redis"
 
 const main = async () => {
     const bot = new Bot<BotContext>(env.BOT_TOKEN)
@@ -125,11 +127,18 @@ const main = async () => {
     bot.use(ChannelsMiddleware)
 
     bot.use(videoConversation)
+    bot.use(audioConversation)
 
     bot.on(":video", async (ctx) => {
         await ctx.react("🫡")
 
         await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+    })
+
+    bot.on(":audio", async (ctx) => {
+        await ctx.react("🫡")
+
+        await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
     })
 
     bot.command("start", async (ctx) => {
