@@ -18,8 +18,17 @@ import { isChannelMember } from "@/utils/is-channel-member"
 import { I18n } from "@grammyjs/i18n"
 import path from "path"
 import { redisStorage } from "@/db/redis"
+import { existsSync, mkdirSync } from "fs"
+
+const createFolderIfNotExists = (path: string) => {
+    if (!existsSync(path)) {
+        mkdirSync(path, { recursive: true })
+    }
+}
 
 const main = async () => {
+    [env.DOWNLOAD_DIR, env.PROCCESSED_DIR].forEach(createFolderIfNotExists)
+
     const bot = new Bot<BotContext>(env.BOT_TOKEN)
 
     bot.api.config.use(hydrateFiles(env.BOT_TOKEN))
