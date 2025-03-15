@@ -5,7 +5,7 @@
   "main": "src/bot.ts",
   "scripts": {
     "dev": "nodemon ./src/bot.ts",
-    "start": "ts-node ./src/bot.ts",
+    "start": "node ./dist/bot.js",
     "build": "tsc && tsc-alias"
   },
   "keywords": [],
