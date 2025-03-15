@@ -5,9 +5,9 @@ RUN npm install -g pnpm
 WORKDIR /app
 
 # Install ffmpeg
-RUN apt-get update && apt-get install -y \
+RUN apk update && apk add --no-cache \
     ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/cache/apk/*
 
 # Install dependencies
 COPY package.json ./

@@ -1,29 +1,29 @@
 version: "3.8"
 
 networks:
-  fileify-network:
+  bot_network:
     driver: bridge
 
 services:
   bot:
     build: .
-    container_name: grammy-bot
+    container_name: fileify-bot
     restart: unless-stopped
     depends_on:
       - redis
     env_file:
       - .env
     networks:
-      - fileify-network
+      - bot_network
 
   redis:
     image: redis:7-alpine
-    container_name: bot-redis
+    container_name: fileify-redis
     restart: unless-stopped
     networks:
-      - fileify-network
+      - bot_network
     volumes:
-      - redis-data:/data
+      - redis_data:/data
 
 volumes:
-  redis-data:
+  redis_data:
