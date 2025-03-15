@@ -34,7 +34,7 @@ export const convirsationHandler = async (conversation: Conversation<Context, Bo
 const handlers: Record<string, (conversation: Conversation<Context, BotContext>, ctx: BotContext) => Promise<void>> = {
     "audio:edit-metadata": metadata,
     "audio:cancel": async (conv: Conversation<Context, BotContext>, ctx: BotContext) => {
-        await ctx.reply("Cancelled")
+        await ctx.reply(ctx.t("canceled"))
     }
 }
 
