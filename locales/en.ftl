@@ -19,3 +19,4 @@ uploading = ⬆️ Uploading to Telegram...
 
 cancel = Cancel
 canceled = Canceled!
+skip = Skip

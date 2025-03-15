@@ -19,3 +19,4 @@ uploading = ⬆️ در حال آپلود به تلگرام...
 
 cancel = لغو
 canceled = لغو شد!
+skip = رد کردن

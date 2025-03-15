@@ -19,3 +19,4 @@ uploading = ⬆️ Telegram'a yükleniyor...
 
 cancel = İptal
 canceled = İptal edildi!
+skip = Atla

@@ -5,8 +5,9 @@ import { BotConversation } from "@/types/conversation";
 
 import updateMetadata from "@/pkg/ffmpeg/update-metadata";
 import env from "@/config/env";
-import { InputFile } from "grammy";
+import { InlineKeyboard, InputFile } from "grammy";
 import logger from "@/utils/logger";
+import { Message } from "grammy/types";
 
 export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
@@ -29,24 +30,40 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
         const ctx3 = await conv.waitFor(":text")
 
-        await ctx3.reply(ctx0.t("audio-new-cover"))
+        const coverImageKeyboard = new InlineKeyboard()
+            .text(ctx0.t("skip"), "audio:metadata:skip")
 
         const check = conv.checkpoint()
 
-        const ctx4 = await conv.waitFor([":photo", ":document"])
+        const coverMessage = await ctx3.reply(ctx0.t("audio-new-cover"), {
+            reply_markup: coverImageKeyboard
+        })
+
+        const ctx4 = await conv.waitFor([":photo", ":document", "callback_query:data"])
 
         if (ctx4.message?.document && !["png", "jpeg", "jpg"].includes(ctx4.message?.document?.file_name!.split(".").at(-1)!)) {
-            await ctx4.reply(ctx0.t("audio-new-cover"))
+            await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
             await conv.rewind(check)
         }
 
+        let msg: null | Message.TextMessage = null;
+
+        if (ctx4.callbackQuery?.data !== "audio:metadata:skip") {
+            await ctx0.api.editMessageReplyMarkup(ctx0.chat!.id, coverMessage.message_id)
+            msg = await ctx0.reply(ctx0.t("downloading"))
+            const cover = await ctx4.getFile()
+            coverImagePath = `${env.DOWNLOAD_DIR}/${cover.file_unique_id}-${await conv.now()}-cover-image.jpeg`
+            await conv.external(() => cover.download(coverImagePath!))
+        } else {
+            await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
+        }
+
+        if (!msg) msg = await ctx0.reply(ctx0.t("downloading"))
+
         inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${audio!.file_name!.split(".").at(-1)}`
-        const msg = await ctx0.reply(ctx0.t("downloading"))
         await conv.external(() => file.download(inputPath!))
 
-        const cover = await ctx4.getFile()
-        coverImagePath = `${env.DOWNLOAD_DIR}/${cover.file_unique_id}-${await conv.now()}-cover-image.jpeg`
-        await conv.external(() => cover.download(coverImagePath!))
+        await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("processing"))
 
         outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${audio!.file_name!.split(".").at(-1)}`
         await conv.external(() => updateMetadata(inputPath!, outputPath!, {
@@ -60,7 +77,7 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
         await ctx0.replyWithAudio(new InputFile(outputPath!), {
             title: ctx1.message?.text,
             performer: ctx2.message?.text,
-            thumbnail: new InputFile(coverImagePath)
+            thumbnail: coverImagePath ? new InputFile(coverImagePath!) : undefined,
         })
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
