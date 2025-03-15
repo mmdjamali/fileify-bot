@@ -23,7 +23,7 @@ services:
     networks:
       - fileify-network
     volumes:
-      - redi-data:/data
+      - redis-data:/data
 
 volumes:
   redis-data:
