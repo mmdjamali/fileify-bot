@@ -133,18 +133,16 @@ const main = async () => {
 
     })
 
-    bot.use(ChannelsMiddleware)
-
     bot.use(videoConversation)
     bot.use(audioConversation)
 
-    bot.on(":video", async (ctx) => {
+    bot.on(":video", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
         await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
     })
 
-    bot.on(":audio", async (ctx) => {
+    bot.on(":audio", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
         await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
