@@ -5,6 +5,7 @@ check-join = Katıldım ✅
 
 video = Bu video ile ne yapmak istersiniz? 🤔
 video-note = 📹 Video Notu
+video-too-long = Video 60 saniyeden kısa olmalıdır
 
 audio = Bu ses dosyasıyla ne yapmak istersiniz? 🤔
 audio-metadata = ✏️ Meta verilerini düzenle

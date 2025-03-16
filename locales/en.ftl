@@ -5,6 +5,7 @@ check-join = I joined ✅
 
 video = What would you like to do with this video?🤔
 video-note = 📹 Video Note
+video-too-long = Video must be less than 60 seconds
 
 audio = What would you like to do with this audio?🤔
 audio-metadata = ✏️ Edit Metadata

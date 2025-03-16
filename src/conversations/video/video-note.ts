@@ -18,7 +18,7 @@ export const videoNote = async (conversation: BotConversation, ctx0: BotContext)
         const video = ctx0.message?.video
 
         if (!video || video?.duration > 60) {
-            await ctx0.reply("Video is too long")
+            await ctx0.reply(ctx0.t("video-too-long"))
             return
         }
 
