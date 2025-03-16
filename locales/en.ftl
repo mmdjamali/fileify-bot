@@ -20,3 +20,5 @@ uploading = ⬆️ Uploading to Telegram...
 cancel = Cancel
 canceled = Canceled!
 skip = Skip
+
+error = Something went wrong, try again!

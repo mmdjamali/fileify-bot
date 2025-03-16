@@ -13,6 +13,9 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
     let outputPath: string | null = null;
     let coverImagePath: string | null = null;
+
+    let msg: null | Message.TextMessage = null;
+
     try {
         const audio = ctx0.message?.audio
 
@@ -45,8 +48,6 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
             await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
             await conv.rewind(check)
         }
-
-        let msg: null | Message.TextMessage = null;
 
         if (ctx4.callbackQuery?.data !== "audio:metadata:skip") {
             await ctx0.api.editMessageReplyMarkup(ctx0.chat!.id, coverMessage.message_id)
@@ -81,8 +82,20 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
         })
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
+
+        logger.info(`${ctx0.from?.id} => edited audio metadata`)
     } catch (err) {
-        logger.info(err)
+        if (err instanceof Error) {
+            err.message ? logger.error(`${ctx0.from?.id} => ${err.message}`) : logger.error(`${ctx0.from?.id} => ${err}`)
+        } else {
+            logger.error(`${ctx0.from?.id} => ${err}`)
+        }
+
+        if (msg) {
+            await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("error"))
+        } else {
+            ctx0.reply(ctx0.t("error"))
+        }
     } finally {
         if (inputPath && existsSync(inputPath)) unlinkSync(inputPath)
         if (outputPath && existsSync(outputPath)) unlinkSync(outputPath)
