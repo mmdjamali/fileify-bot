@@ -41,9 +41,14 @@ const main = async () => {
 
     const sessionPlugin = session({
         initial,
-        getSessionKey: (ctx: Context) => ctx.chatId!.toString(),
+        getSessionKey: (ctx: Context) => {
+            if (ctx.from?.id) {
+                return `user:${ctx.from?.id.toString()}`
+            }
+
+            return ctx.chatId ? `chat:${ctx.chatId.toString()}` : undefined
+        },
         storage: redisStorage,
-        prefix: "chat:"
     })
 
     const i18n = new I18n<BotContext>({
