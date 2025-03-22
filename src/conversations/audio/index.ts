@@ -8,6 +8,18 @@ import { metadata } from "./metadata"
 export const AUDIO_CONVIRATION_NAME = "audio"
 
 export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
+    const file = ctx.message?.audio
+
+    if (!file) {
+        await ctx.reply(ctx.t("error"))
+        return
+    }
+
+    if (file.file_size && file.file_size > 20 * 1024 * 1024) {
+        await ctx.reply(ctx.t("file-size-error", { size: 20 }))
+        return
+    }
+
     const keyboard = new InlineKeyboard()
         .text(ctx.t("audio-metadata"), "audio:edit-metadata")
         .row()

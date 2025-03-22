@@ -23,3 +23,5 @@ canceled = Canceled!
 skip = Skip
 
 error = Something went wrong, try again!
+
+file-size-error = "File size must be less than {{size}} MB"

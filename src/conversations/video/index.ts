@@ -8,6 +8,18 @@ import env from "@/config/env"
 export const VIDEO_CONVIRATION_NAME = "video"
 
 export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
+    const file = ctx.message?.video
+
+    if (!file) {
+        await ctx.reply(ctx.t("error"))
+        return
+    }
+
+    if (file.file_size && file.file_size > 20 * 1024 * 1024) {
+        await ctx.reply(ctx.t("file-size-error", { size: 20 }))
+        return
+    }
+
     const keyboard = new InlineKeyboard()
         .text(ctx.t("video-note"), "video:video-note")
         .row()
