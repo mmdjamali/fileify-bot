@@ -24,4 +24,4 @@ skip = Atla
 
 error = Bir şeyler yanlış gitti, tekrar deneyin!
 
-file-size-error = "Dosya boyutu {{size}} MB'tan küçük olmalıdır"
+file-size-error = "Dosya boyutu { size } MB'tan küçük olmalıdır"
