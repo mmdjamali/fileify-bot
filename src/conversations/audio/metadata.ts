@@ -83,7 +83,7 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
 
-        logger.info(`${ctx0.from?.id} => edited audio metadata`)
+        logger.info(`${ctx0.from?.id} => ${[ctx0.from?.first_name, ctx0.from?.last_name].filter(v => !!v).join(" ")} edited audio ${audio?.file_name} with title ${ctx1.message?.text} and artist ${ctx2.message?.text}`)
     } catch (err) {
         if (err instanceof Error) {
             err.message ? logger.error(`${ctx0.from?.id} => ${err.message}`) : logger.error(`${ctx0.from?.id} => ${err}`)
