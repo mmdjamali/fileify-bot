@@ -16,9 +16,8 @@ const updateMetadata = async (
         if (coverImagePath) {
             command
                 .input(coverImagePath)
-                .outputOptions('-map', '0')
+                .outputOptions('-map', '0:a')
                 .outputOptions('-map', '1:v')
-                .outputOptions('-map', '-0:v')
                 .outputOptions('-c', 'copy')
                 .outputOptions('-c:v', 'mjpeg')
                 .outputOptions('-disposition:v', 'attached_pic')
