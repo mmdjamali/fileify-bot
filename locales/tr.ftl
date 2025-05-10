@@ -1,7 +1,7 @@
 start = Merhaba! Düzenlemek istediğin bir dosyan mı var?
 
-join-channels = Devam edebilmek için aşağıdaki kanallara katılmalısınız.
-check-join = Katıldım ✅
+join-channels = Devam edebilmek için aşağıdaki kanallara abone olmalısınız.
+check-join = Abone oldum ✅
 
 video = Bu video ile ne yapmak istersiniz? 🤔
 video-note = 📹 Video Notu
@@ -13,6 +13,8 @@ audio-new-title = Yeni başlık ne olsun?
 audio-new-artist = Yeni sanatçı kim olsun?
 audio-new-album = Yeni albüm adı ne olsun?
 audio-new-cover = Yeni kapak resmi ne olsun?
+
+image = Bu fotoğraf ile ne yapmak istersiniz? 🤔
 
 downloading = ⬇️ İndiriliyor...
 processing = 🔄 İşleniyor...

@@ -11,6 +11,7 @@ import { type SessionData } from "@/types/session"
 
 import { VIDEO_CONVIRATION_NAME, videoConversation } from "@/conversations/video"
 import { AUDIO_CONVIRATION_NAME, audioConversation } from "@/conversations/audio"
+import { PHOTO_CONVIRATION_NAME, photoConversation } from "@/conversations/photo"
 
 import ChannelsMiddleware from "@/middlewares/channels"
 import { ChatMember } from "grammy/types"
@@ -140,6 +141,7 @@ const main = async () => {
 
     bot.use(videoConversation)
     bot.use(audioConversation)
+    bot.use(photoConversation)
 
     bot.on("message:video", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
@@ -151,6 +153,42 @@ const main = async () => {
         await ctx.react("🫡")
 
         await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
+    })
+
+    bot.on("message:photo", ChannelsMiddleware, async (ctx) => {
+        await ctx.react("🫡")
+
+        await ctx.conversation.enter(PHOTO_CONVIRATION_NAME)
+    })
+
+    bot.on("message:file", ChannelsMiddleware, async (ctx) => {
+        const file = ctx.message?.document
+
+        if (!file?.mime_type) {
+            await ctx.reply(ctx.t("error"))
+            return
+        }
+
+        if (["image/jpeg", "image/png"].includes(file.mime_type)) {
+            await ctx.react("🫡")
+
+            await ctx.conversation.enter(PHOTO_CONVIRATION_NAME)
+            return
+        }
+
+        if (["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"].includes(file.mime_type)) {
+            await ctx.react("🫡")
+
+            await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+            return
+        }
+
+        if (["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"].includes(file.mime_type)) {
+            await ctx.react("🫡")
+
+            await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
+            return
+        }
     })
 
     bot.command("start", async (ctx) => {
