@@ -3,6 +3,7 @@ import { BotContext } from "@/types/context"
 import { Conversation, createConversation } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
 import { Context, InlineKeyboard } from "grammy"
+import { resize } from "./resize"
 
 export const PHOTO_CONVIRATION_NAME = "photo"
 
@@ -20,13 +21,15 @@ export const convirsationHandler = async (conversation: Conversation<BotContext,
     }
 
     const keyboard = new InlineKeyboard()
-        .text(ctx.t("cancel"), "image:cancel")
+        .text("Resize", "photo:resize")
+        .row()
+        .text(ctx.t("cancel"), "photo:cancel")
 
-    const callbackMessage = await ctx.reply(ctx.t("image"), {
+    const callbackMessage = await ctx.reply(ctx.t("photo"), {
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(["image:cancel"])
+    const callbackCtx = await conversation.waitForCallbackQuery(["photo:cancel", "photo:resize"])
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
@@ -41,9 +44,10 @@ export const convirsationHandler = async (conversation: Conversation<BotContext,
 }
 
 const handlers: Record<string, (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => Promise<void>> = {
-    "image:cancel": async (conv: Conversation<BotContext, BotContext>, ctx: BotContext) => {
+    "photo:cancel": async (conv: Conversation<BotContext, BotContext>, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
-    }
+    },
+    "photo:resize": resize
 }
 
 export const photoConversation = createConversation(convirsationHandler, {
