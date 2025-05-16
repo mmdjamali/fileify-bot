@@ -13,16 +13,16 @@ import sharp from "sharp";
 export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
     let outputPath: string | null = null;
-    let coverImagePath: string | null = null;
 
     let msg: null | Message.TextMessage = null;
 
     try {
-        const photo = ctx0.message?.photo?.[0] || ctx0.message?.document
+        console.log(ctx0.message?.photo)
+        const photo = ctx0.message?.photo?.at(-1) || ctx0.message?.document
 
         const file = await ctx0.api.getFile(photo?.file_id!)
 
-        if (!msg) msg = await ctx0.reply(ctx0.t("downloading"))
+        msg = await ctx0.reply(ctx0.t("downloading"))
 
         const format = "file_name" in photo! ? photo!.file_name!.split(".").at(-1) : "jpeg"
 
@@ -41,9 +41,25 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
 
         const ctx1 = await conv.waitFor(":text")
 
-        await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("processing"))
+        if (!ctx1.message?.text.match(/^\d+x\d+$/)) {
+            await ctx0.reply(ctx0.t("invalid-format"))
+            return
+        }
+
+        const [width, height] = ctx1.message?.text!.split("x").map(v => parseInt(v))
+
+        if (width <= 0 || height <= 0) {
+            await ctx0.reply(ctx0.t("invalid-format"))
+            return
+        }
+
+        msg = await ctx0.reply(ctx0.t("processing"))
 
         outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-photo.${format}`
+
+        await sharp(inputPath!)
+            .resize(width, height)
+            .toFile(outputPath!)
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("uploading"))
 
@@ -67,6 +83,5 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     } finally {
         if (inputPath && existsSync(inputPath)) unlinkSync(inputPath)
         if (outputPath && existsSync(outputPath)) unlinkSync(outputPath)
-        if (coverImagePath && existsSync(coverImagePath)) unlinkSync(coverImagePath)
     }
 }   
