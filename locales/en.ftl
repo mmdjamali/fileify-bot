@@ -14,15 +14,23 @@ audio-new-artist = What's the new artist?
 audio-new-album = What's the new album?
 audio-new-cover = What's the new cover image?
 
-image = What would you like to do with this image?🤔
+photo = What would you like to do with this photo?🤔
+photo-resize = 📐 Resize Image
+photo-resize-prompt =
+    📐 Current size: { $width }x{ $height }
+
+    What dimensions would you like to resize it to?
+    Reply with WIDTHxHEIGHT (like 512x512)
+photo-resize-invalid = Invalid format, try again
+
 
 downloading = ⬇️ Downloading...
 processing = 🔄 Processing...
 uploading = ⬆️ Uploading to Telegram...
 
-cancel = Cancel
-canceled = Canceled!
-skip = Skip
+cancel = ❌ Cancel
+canceled = ❌ Canceled!
+skip = ⏩ Skip
 
 error = Something went wrong, try again!
 

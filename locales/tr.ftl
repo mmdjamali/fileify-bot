@@ -14,15 +14,22 @@ audio-new-artist = Yeni sanatçı kim olsun?
 audio-new-album = Yeni albüm adı ne olsun?
 audio-new-cover = Yeni kapak resmi ne olsun?
 
-image = Bu fotoğraf ile ne yapmak istersiniz? 🤔
+photo = Bu fotoğrafla ne yapmak istersiniz? 🤔
+photo-resize = 📐 Görseli Yeniden Boyutlandır
+photo-resize-prompt =
+    📐 Mevcut boyut: { $width }x{ $height }
+
+    Hangi boyutlara yeniden boyutlandırmak istersiniz?
+    WIDTHxHEIGHT formatında yanıt verin (örneğin 512x512)
+photo-resize-invalid = Geçersiz format, lütfen tekrar deneyin.
 
 downloading = ⬇️ İndiriliyor...
 processing = 🔄 İşleniyor...
 uploading = ⬆️ Telegram'a yükleniyor...
 
-cancel = İptal
-canceled = İptal edildi!
-skip = Atla
+cancel = ❌ İptal
+canceled = ❌ İptal edildi!
+skip = ⏩ Atla
 
 error = Bir şeyler yanlış gitti, tekrar deneyin!
 

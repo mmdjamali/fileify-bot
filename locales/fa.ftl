@@ -14,15 +14,23 @@ audio-new-artist = اسم هنرمند جدید چیه؟
 audio-new-album = اسم آلبوم جدید چیه؟
 audio-new-cover = عکس جدید برای آهنگ چی باشه؟
 
-image = What would you like to do with this image?🤔
+photo = می‌خواید با این عکس چه کاری انجام بدید؟ 🤔
+photo-resize = 📐 تغییر اندازهٔ تصویر
+photo-resize-prompt =
+    📐 اندازهٔ فعلی: { $width }x{ $height }
+
+    می‌خواید عکس رو به چه ابعادی تغییر بدید؟
+    لطفاً مقدار رو به صورت WIDTHxHEIGHT (مثلاً 512x512) ارسال کنید
+photo-resize-invalid = فرمت نامعتبره، لطفاً دوباره امتحان کنید.
+
 
 downloading = ⬇️ در حال دانلود...
 processing = 🔄 در حال پردازش...
 uploading = ⬆️ در حال آپلود به تلگرام...
 
-cancel = لغو
-canceled = لغو شد!
-skip = رد کردن
+cancel = ❌ لغو
+canceled = ❌ لغو شد!
+skip = ⏩ رد کردن
 
 error = مشکلی پیش آمد! دوباره امتحان کنید!
 
