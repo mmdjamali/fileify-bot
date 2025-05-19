@@ -3,9 +3,8 @@ import { unlinkSync, existsSync } from "fs"
 import { BotContext } from "@/types/context";
 import { BotConversation } from "@/types/conversation";
 
-import updateMetadata from "@/pkg/ffmpeg/update-metadata";
 import env from "@/config/env";
-import { InlineKeyboard, InputFile } from "grammy";
+import { InputFile } from "grammy";
 import logger from "@/utils/logger";
 import { Message } from "grammy/types";
 import sharp from "sharp";
@@ -31,39 +30,36 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
 
-        const metadata = await sharp(inputPath!).metadata()
+        const metadata = await conv.external(() => sharp(inputPath!).metadata())
 
-        await ctx0.reply(
-            `📐 Current size: ${metadata.width}x${metadata.height}\n\n` +
-            `What dimensions would you like to resize it to?\n` +
-            `Reply with WIDTHxHEIGHT (like 512x512)`
-        )
+        await ctx0.reply(ctx0.t("photo-resize-prompt", { width: metadata.width!, height: metadata.height! }))
+
+        const cpt1 = conv.checkpoint()
 
         const ctx1 = await conv.waitFor(":text")
 
         if (!ctx1.message?.text.match(/^\d+x\d+$/)) {
-            await ctx0.reply(ctx0.t("invalid-format"))
-            return
+            await ctx0.reply(ctx0.t("photo-resize-invalid"))
+            await conv.rewind(cpt1)
         }
 
-        const [width, height] = ctx1.message?.text!.split("x").map(v => parseInt(v))
+        const [width, height] = ctx1.message?.text!.split("x").map(v => parseInt(v))!
 
         if (width <= 0 || height <= 0) {
-            await ctx0.reply(ctx0.t("invalid-format"))
-            return
+            await ctx0.reply(ctx0.t("photo-resize-invalid"))
+            await conv.rewind(cpt1)
         }
-
         msg = await ctx0.reply(ctx0.t("processing"))
 
         outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-photo.${format}`
 
-        await sharp(inputPath!)
+        await conv.external(() => sharp(inputPath!)
             .resize(width, height)
-            .toFile(outputPath!)
+            .toFile(outputPath!))
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("uploading"))
 
-        await ctx0.replyWithDocument(new InputFile(outputPath!))
+        await ctx0.replyWithDocument(new InputFile(outputPath!, "file_name" in photo! ? photo.file_name : `resized-by-fileify.jpg`))
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
 

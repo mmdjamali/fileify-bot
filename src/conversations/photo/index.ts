@@ -21,7 +21,7 @@ export const convirsationHandler = async (conversation: Conversation<BotContext,
     }
 
     const keyboard = new InlineKeyboard()
-        .text("Resize", "photo:resize")
+        .text(ctx.t("photo-resize"), "photo:resize")
         .row()
         .text(ctx.t("cancel"), "photo:cancel")
 
