@@ -16,7 +16,6 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     let msg: null | Message.TextMessage = null;
 
     try {
-        console.log(ctx0.message?.photo)
         const photo = ctx0.message?.photo?.at(-1) || ctx0.message?.document
 
         const file = await ctx0.api.getFile(photo?.file_id!)
