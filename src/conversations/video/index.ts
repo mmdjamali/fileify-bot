@@ -2,6 +2,7 @@ import { BotContext } from "@/types/context"
 import { Conversation, createConversation } from "@grammyjs/conversations"
 import { Context, InlineKeyboard } from "grammy"
 import { videoNote } from "./video-note"
+import { toGif } from "./to-gif"
 import { hydrateFiles } from "@grammyjs/files"
 import env from "@/config/env"
 
@@ -23,13 +24,15 @@ export const convirsationHandler = async (conversation: Conversation<Context, Bo
     const keyboard = new InlineKeyboard()
         .text(ctx.t("video-note"), "video:video-note")
         .row()
+        .text(ctx.t("video-to-gif"), "video:to-gif")
+        .row()
         .text(ctx.t("cancel"), "video:cancel")
 
     const callbackMessage = await ctx.reply(ctx.t("video"), {
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(["video:video-note", "video:cancel"])
+    const callbackCtx = await conversation.waitForCallbackQuery(["video:video-note", "video:to-gif", "video:cancel"])
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
@@ -45,6 +48,7 @@ export const convirsationHandler = async (conversation: Conversation<Context, Bo
 
 const handlers: Record<string, (conversation: Conversation<Context, BotContext>, ctx: BotContext) => Promise<void>> = {
     "video:video-note": videoNote,
+    "video:to-gif": toGif,
     "video:cancel": async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
