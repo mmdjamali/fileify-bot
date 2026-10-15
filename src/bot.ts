@@ -149,6 +149,12 @@ const main = async () => {
         await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
     })
 
+    bot.on("message:animation", ChannelsMiddleware, async (ctx) => {
+        await ctx.react("🫡")
+
+        await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+    })
+
     bot.on("message:audio", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 

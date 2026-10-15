@@ -9,7 +9,7 @@ import env from "@/config/env"
 export const VIDEO_CONVIRATION_NAME = "video"
 
 export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.video
+    const file = ctx.message?.video ?? ctx.message?.animation
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
