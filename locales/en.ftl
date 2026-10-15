@@ -6,6 +6,8 @@ check-join = I joined ✅
 video = What would you like to do with this video?🤔
 video-note = 📹 Video Note
 video-too-long = Video must be less than 60 seconds
+video-to-gif = 🎞 Convert to GIF
+gif-too-long = Video must be less than { $seconds } seconds to convert to GIF
 
 audio = What would you like to do with this audio?🤔
 audio-metadata = ✏️ Edit Metadata

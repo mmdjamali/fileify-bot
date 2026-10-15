@@ -6,6 +6,8 @@ check-join = Abone oldum ✅
 video = Bu video ile ne yapmak istersiniz? 🤔
 video-note = 📹 Video Notu
 video-too-long = Video 60 saniyeden kısa olmalıdır
+video-to-gif = 🎞 GIF'e Dönüştür
+gif-too-long = GIF'e dönüştürmek için video { $seconds } saniyeden kısa olmalıdır
 
 audio = Bu ses dosyasıyla ne yapmak istersiniz? 🤔
 audio-metadata = ✏️ Meta verilerini düzenle
