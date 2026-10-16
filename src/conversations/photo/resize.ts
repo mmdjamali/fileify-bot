@@ -8,6 +8,7 @@ import { InputFile } from "grammy";
 import logger from "@/utils/logger";
 import { Message } from "grammy/types";
 import sharp from "sharp";
+import { fileExtension } from "@/utils/file-extension";
 
 export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
@@ -18,11 +19,16 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     try {
         const photo = ctx0.message?.photo?.at(-1) || ctx0.message?.document
 
-        const file = await ctx0.api.getFile(photo?.file_id!)
+        if (!photo) {
+            await ctx0.reply(ctx0.t("error"))
+            return
+        }
+
+        const file = await ctx0.api.getFile(photo.file_id)
 
         msg = await ctx0.reply(ctx0.t("downloading"))
 
-        const format = "file_name" in photo! ? photo!.file_name!.split(".").at(-1) : "jpeg"
+        const format = "file_name" in photo ? fileExtension(photo, "jpeg") : "jpeg"
 
         inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${await conv.now()}-photo.${format}`
         await conv.external(() => file.download(inputPath!))
@@ -58,7 +64,7 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("uploading"))
 
-        await ctx0.replyWithDocument(new InputFile(outputPath!, "file_name" in photo! ? photo.file_name : `resized-by-fileify.jpg`))
+        await ctx0.replyWithDocument(new InputFile(outputPath!, "file_name" in photo && photo.file_name ? photo.file_name : `resized-by-fileify.jpg`))
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
 
