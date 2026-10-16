@@ -1,5 +1,5 @@
 import env from "@/config/env"
-import { convertVideoToSquare } from "@/pkg/ffmpeg"
+import { convertVideoToSquare, getDuration } from "@/pkg/ffmpeg"
 import { BotContext } from "@/types/context"
 import { BotConversation } from "@/types/conversation"
 import logger from "@/utils/logger"
@@ -15,9 +15,15 @@ export const videoNote = async (conversation: BotConversation, ctx0: BotContext)
 
     let msg: null | Message.TextMessage = null;
     try {
-        const video = ctx0.message?.video ?? ctx0.message?.animation
+        const media = ctx0.message?.video ?? ctx0.message?.animation
+        const video = media ?? ctx0.message?.document
 
-        if (!video || video?.duration > 60) {
+        if (!video) {
+            await ctx0.reply(ctx0.t("error"))
+            return
+        }
+
+        if (media && media.duration > 60) {
             await ctx0.reply(ctx0.t("video-too-long"))
             return
         }
@@ -27,11 +33,17 @@ export const videoNote = async (conversation: BotConversation, ctx0: BotContext)
             return
         }
 
-        const file = await ctx0.api.getFile(video?.file_id!)
+        const file = await ctx0.api.getFile(video.file_id)
 
         inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${Date.now()}-video-note.mp4`
         msg = await ctx0.reply(ctx0.t("downloading"))
-        await file.download(inputPath)
+        await conversation.external(() => file.download(inputPath!))
+
+        // documents carry no duration, so probe the downloaded file
+        if (!media && await conversation.external(() => getDuration(inputPath!)) > 60) {
+            await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("video-too-long"))
+            return
+        }
 
         await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("processing"))
 
