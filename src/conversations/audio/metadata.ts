@@ -69,8 +69,8 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
         outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${audio!.file_name!.split(".").at(-1)}`
         await conv.external(() => updateMetadata(inputPath!, outputPath!, {
             title: ctx1.message?.text,
-            album: ctx2.message?.text,
-            artist: ctx3.message?.text,
+            artist: ctx2.message?.text,
+            album: ctx3.message?.text,
         }, coverImagePath!))
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("uploading"))
