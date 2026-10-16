@@ -8,6 +8,7 @@ import env from "@/config/env";
 import { InlineKeyboard, InputFile } from "grammy";
 import logger from "@/utils/logger";
 import { Message } from "grammy/types";
+import { fileExtension } from "@/utils/file-extension";
 
 export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
@@ -17,9 +18,15 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
     let msg: null | Message.TextMessage = null;
 
     try {
-        const audio = ctx0.message?.audio
+        const audio = ctx0.message?.audio ?? ctx0.message?.document
 
-        const file = await ctx0.api.getFile(audio?.file_id!)
+        if (!audio) {
+            await ctx0.reply(ctx0.t("error"))
+            return
+        }
+
+        const file = await ctx0.api.getFile(audio.file_id)
+        const extension = fileExtension(audio, "mp3")
 
         await ctx0.reply(ctx0.t("audio-new-title"))
 
@@ -61,12 +68,12 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
         if (!msg) msg = await ctx0.reply(ctx0.t("downloading"))
 
-        inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${audio!.file_name!.split(".").at(-1)}`
+        inputPath = `${env.DOWNLOAD_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${extension}`
         await conv.external(() => file.download(inputPath!))
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("processing"))
 
-        outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${audio!.file_name!.split(".").at(-1)}`
+        outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-audio.${extension}`
         await conv.external(() => updateMetadata(inputPath!, outputPath!, {
             title: ctx1.message?.text,
             artist: ctx2.message?.text,
@@ -83,7 +90,7 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
         await ctx0.api.deleteMessage(ctx0.chat!.id, msg.message_id)
 
-        logger.info(`${ctx0.from?.id} => ${[ctx0.from?.first_name, ctx0.from?.last_name].filter(v => !!v).join(" ")} edited audio ${audio?.file_name} with title ${ctx1.message?.text} and artist ${ctx2.message?.text}`)
+        logger.info(`${ctx0.from?.id} => ${[ctx0.from?.first_name, ctx0.from?.last_name].filter(v => !!v).join(" ")} edited audio ${audio.file_name} with title ${ctx1.message?.text} and artist ${ctx2.message?.text}`)
     } catch (err) {
         if (err instanceof Error) {
             err.message ? logger.error(`${ctx0.from?.id} => ${err.message}`) : logger.error(`${ctx0.from?.id} => ${err}`)

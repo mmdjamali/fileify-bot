@@ -8,7 +8,7 @@ import { metadata } from "./metadata"
 export const AUDIO_CONVIRATION_NAME = "audio"
 
 export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.audio
+    const file = ctx.message?.audio ?? ctx.message?.document
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
