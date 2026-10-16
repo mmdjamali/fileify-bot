@@ -1,4 +1,4 @@
-<p align="center"><img align="center" width="140" src="./.github\logo.svg"/></p>
+<p align="center"><img align="center" width="140" src="./.github/logo.svg"/></p>
 <p align="center">
   <img src="https://skillicons.dev/icons?i=ts" />
   <br/>
