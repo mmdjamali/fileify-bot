@@ -36,5 +36,6 @@ canceled = ❌ İptal edildi!
 skip = ⏩ Atla
 
 error = Bir şeyler yanlış gitti, tekrar deneyin!
+unsupported-file = Desteklenmeyen dosya türü. Fotoğraf, video, GIF veya ses dosyası gönderin.
 
 file-size-error = Dosya boyutu { $size } MB'tan küçük olmalıdır

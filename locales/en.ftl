@@ -37,5 +37,6 @@ canceled = ❌ Canceled!
 skip = ⏩ Skip
 
 error = Something went wrong, try again!
+unsupported-file = Unsupported file type. Send a photo, video, GIF, or audio file.
 
 file-size-error = File size must be less than { $size } MB

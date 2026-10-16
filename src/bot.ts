@@ -171,7 +171,7 @@ const main = async () => {
         const file = ctx.message?.document
 
         if (!file?.mime_type) {
-            await ctx.reply(ctx.t("error"))
+            await ctx.reply(ctx.t("unsupported-file"))
             return
         }
 
@@ -195,6 +195,8 @@ const main = async () => {
             await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
             return
         }
+
+        await ctx.reply(ctx.t("unsupported-file"))
     })
 
     bot.command("start", async (ctx) => {
