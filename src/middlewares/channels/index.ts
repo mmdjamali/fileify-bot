@@ -30,7 +30,7 @@ const ChannelsMiddleware = async (ctx: BotContext, next: NextFunction) => {
 
     channels.forEach((member, idx) => {
         if (member) {
-            const isMember = isChannelMember(member.status);
+            const isMember = isChannelMember(member);
             isMemberToAll = isMemberToAll && isMember
 
             if (isMember || !env.CHANNELS[idx]) return
