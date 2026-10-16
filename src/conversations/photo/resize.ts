@@ -10,6 +10,8 @@ import { Message } from "grammy/types";
 import sharp from "sharp";
 import { fileExtension } from "@/utils/file-extension";
 
+const MAX_DIMENSION = 4096
+
 export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     let inputPath: string | null = null;
     let outputPath: string | null = null;
@@ -52,6 +54,11 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
 
         if (width <= 0 || height <= 0) {
             await ctx0.reply(ctx0.t("photo-resize-invalid"))
+            await conv.rewind(cpt1)
+        }
+
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+            await ctx0.reply(ctx0.t("photo-resize-too-large", { max: MAX_DIMENSION }))
             await conv.rewind(cpt1)
         }
         msg = await ctx0.reply(ctx0.t("processing"))

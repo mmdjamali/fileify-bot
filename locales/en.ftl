@@ -25,6 +25,7 @@ photo-resize-prompt =
     What dimensions would you like to resize it to?
     Reply with WIDTHxHEIGHT (like 512x512)
 photo-resize-invalid = Invalid format, try again
+photo-resize-too-large = Too large. Width and height must be at most { $max }px.
 
 
 downloading = ⬇️ Downloading...

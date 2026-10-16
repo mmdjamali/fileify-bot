@@ -25,6 +25,7 @@ photo-resize-prompt =
     Hangi boyutlara yeniden boyutlandırmak istersiniz?
     WIDTHxHEIGHT formatında yanıt verin (örneğin 512x512)
 photo-resize-invalid = Geçersiz format, lütfen tekrar deneyin.
+photo-resize-too-large = Çok büyük. Genişlik ve yükseklik en fazla { $max }px olmalıdır.
 
 downloading = ⬇️ İndiriliyor...
 processing = 🔄 İşleniyor...
