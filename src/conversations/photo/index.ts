@@ -8,7 +8,7 @@ import { resize } from "./resize"
 export const PHOTO_CONVIRATION_NAME = "photo"
 
 export const convirsationHandler = async (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.photo?.[0] || ctx.message?.document
+    const file = ctx.message?.photo?.at(-1) || ctx.message?.document
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
