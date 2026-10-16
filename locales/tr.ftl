@@ -15,6 +15,7 @@ audio-new-title = Yeni başlık ne olsun?
 audio-new-artist = Yeni sanatçı kim olsun?
 audio-new-album = Yeni albüm adı ne olsun?
 audio-new-cover = Yeni kapak resmi ne olsun?
+audio-cover-invalid = Lütfen JPEG veya PNG bir görsel gönderin ya da Atla'ya dokunun.
 
 photo = Bu fotoğrafla ne yapmak istersiniz? 🤔
 photo-resize = 📐 Görseli Yeniden Boyutlandır

@@ -15,6 +15,7 @@ audio-new-title = What's the new title?
 audio-new-artist = What's the new artist?
 audio-new-album = What's the new album?
 audio-new-cover = What's the new cover image?
+audio-cover-invalid = Please send a JPEG or PNG image, or tap Skip.
 
 photo = What would you like to do with this photo?🤔
 photo-resize = 📐 Resize Image

@@ -51,19 +51,30 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
         const ctx4 = await conv.waitFor([":photo", ":document", "callback_query:data"])
 
-        if (ctx4.message?.document && !["png", "jpeg", "jpg"].includes(ctx4.message?.document?.file_name!.split(".").at(-1)!)) {
-            await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
-            await conv.rewind(check)
-        }
+        if (ctx4.callbackQuery) {
+            await ctx4.answerCallbackQuery()
 
-        if (ctx4.callbackQuery?.data !== "audio:metadata:skip") {
+            // ignore taps on buttons from older messages
+            if (ctx4.callbackQuery.data !== "audio:metadata:skip") {
+                await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
+                await conv.rewind(check)
+            }
+
+            await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
+        } else {
+            const document = ctx4.message?.document
+
+            if (document && !["image/jpeg", "image/png"].includes(document.mime_type ?? "")) {
+                await ctx4.reply(ctx0.t("audio-cover-invalid"))
+                await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
+                await conv.rewind(check)
+            }
+
             await ctx0.api.editMessageReplyMarkup(ctx0.chat!.id, coverMessage.message_id)
             msg = await ctx0.reply(ctx0.t("downloading"))
             const cover = await ctx4.getFile()
             coverImagePath = `${env.DOWNLOAD_DIR}/${cover.file_unique_id}-${await conv.now()}-cover-image.jpeg`
             await conv.external(() => cover.download(coverImagePath!))
-        } else {
-            await ctx0.api.deleteMessage(ctx0.chat!.id, coverMessage.message_id)
         }
 
         if (!msg) msg = await ctx0.reply(ctx0.t("downloading"))
@@ -78,7 +89,7 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
             title: ctx1.message?.text,
             artist: ctx2.message?.text,
             album: ctx3.message?.text,
-        }, coverImagePath!))
+        }, coverImagePath ?? undefined))
 
         await ctx0.api.editMessageText(ctx0.chat!.id, msg.message_id, ctx0.t("uploading"))
 

@@ -15,6 +15,7 @@ audio-new-title = عنوان جدید چی باشه؟
 audio-new-artist = اسم هنرمند جدید چیه؟
 audio-new-album = اسم آلبوم جدید چیه؟
 audio-new-cover = عکس جدید برای آهنگ چی باشه؟
+audio-cover-invalid = لطفاً یک عکس JPEG یا PNG بفرستید، یا «رد کردن» رو بزنید.
 
 photo = می‌خواید با این عکس چه کاری انجام بدید؟ 🤔
 photo-resize = 📐 تغییر اندازهٔ تصویر
