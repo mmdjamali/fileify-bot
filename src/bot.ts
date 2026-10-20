@@ -9,9 +9,9 @@ import env from "@/config/env"
 import { type BotContext } from "@/types/context"
 import { type SessionData } from "@/types/session"
 
-import { VIDEO_CONVIRATION_NAME, videoConversation } from "@/conversations/video"
-import { AUDIO_CONVIRATION_NAME, audioConversation } from "@/conversations/audio"
-import { PHOTO_CONVIRATION_NAME, photoConversation } from "@/conversations/photo"
+import { VIDEO_CONVERSATION_NAME, videoConversation } from "@/conversations/video"
+import { AUDIO_CONVERSATION_NAME, audioConversation } from "@/conversations/audio"
+import { PHOTO_CONVERSATION_NAME, photoConversation } from "@/conversations/photo"
 
 import ChannelsMiddleware from "@/middlewares/channels"
 import { ChatMember } from "grammy/types"
@@ -146,25 +146,25 @@ const main = async () => {
     bot.on("message:video", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
-        await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+        await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
     })
 
     bot.on("message:animation", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
-        await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+        await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
     })
 
     bot.on("message:audio", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
-        await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
+        await ctx.conversation.enter(AUDIO_CONVERSATION_NAME)
     })
 
     bot.on("message:photo", ChannelsMiddleware, async (ctx) => {
         await ctx.react("🫡")
 
-        await ctx.conversation.enter(PHOTO_CONVIRATION_NAME)
+        await ctx.conversation.enter(PHOTO_CONVERSATION_NAME)
     })
 
     bot.on("message:file", ChannelsMiddleware, async (ctx) => {
@@ -178,21 +178,21 @@ const main = async () => {
         if (["image/jpeg", "image/png"].includes(file.mime_type)) {
             await ctx.react("🫡")
 
-            await ctx.conversation.enter(PHOTO_CONVIRATION_NAME)
+            await ctx.conversation.enter(PHOTO_CONVERSATION_NAME)
             return
         }
 
         if (["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"].includes(file.mime_type)) {
             await ctx.react("🫡")
 
-            await ctx.conversation.enter(VIDEO_CONVIRATION_NAME)
+            await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
             return
         }
 
         if (["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"].includes(file.mime_type)) {
             await ctx.react("🫡")
 
-            await ctx.conversation.enter(AUDIO_CONVIRATION_NAME)
+            await ctx.conversation.enter(AUDIO_CONVERSATION_NAME)
             return
         }
 

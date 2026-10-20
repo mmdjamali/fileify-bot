@@ -5,9 +5,9 @@ import { hydrateFiles } from "@grammyjs/files"
 import env from "@/config/env"
 import { metadata } from "./metadata"
 
-export const AUDIO_CONVIRATION_NAME = "audio"
+export const AUDIO_CONVERSATION_NAME = "audio"
 
-export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
+export const conversationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
     const file = ctx.message?.audio ?? ctx.message?.document
 
     if (!file) {
@@ -50,8 +50,8 @@ const handlers: Record<string, (conversation: Conversation<Context, BotContext>,
     }
 }
 
-export const audioConversation = createConversation(convirsationHandler, {
-    id: AUDIO_CONVIRATION_NAME,
+export const audioConversation = createConversation(conversationHandler, {
+    id: AUDIO_CONVERSATION_NAME,
     plugins: [async (ctx, next) => {
         ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
         await next();

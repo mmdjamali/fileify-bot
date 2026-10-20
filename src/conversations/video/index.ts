@@ -6,9 +6,9 @@ import { toGif } from "./to-gif"
 import { hydrateFiles } from "@grammyjs/files"
 import env from "@/config/env"
 
-export const VIDEO_CONVIRATION_NAME = "video"
+export const VIDEO_CONVERSATION_NAME = "video"
 
-export const convirsationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
+export const conversationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
     const file = ctx.message?.video ?? ctx.message?.animation ?? ctx.message?.document
 
     if (!file) {
@@ -54,8 +54,8 @@ const handlers: Record<string, (conversation: Conversation<Context, BotContext>,
     }
 }
 
-export const videoConversation = createConversation(convirsationHandler, {
-    id: VIDEO_CONVIRATION_NAME,
+export const videoConversation = createConversation(conversationHandler, {
+    id: VIDEO_CONVERSATION_NAME,
     plugins: [async (ctx, next) => {
         ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
         await next();

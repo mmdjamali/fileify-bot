@@ -5,9 +5,9 @@ import { hydrateFiles } from "@grammyjs/files"
 import { Context, InlineKeyboard } from "grammy"
 import { resize } from "./resize"
 
-export const PHOTO_CONVIRATION_NAME = "photo"
+export const PHOTO_CONVERSATION_NAME = "photo"
 
-export const convirsationHandler = async (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => {
+export const conversationHandler = async (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => {
     const file = ctx.message?.photo?.at(-1) || ctx.message?.document
 
     if (!file) {
@@ -50,8 +50,8 @@ const handlers: Record<string, (conversation: Conversation<BotContext, BotContex
     "photo:resize": resize
 }
 
-export const photoConversation = createConversation(convirsationHandler, {
-    id: PHOTO_CONVIRATION_NAME,
+export const photoConversation = createConversation(conversationHandler, {
+    id: PHOTO_CONVERSATION_NAME,
     plugins: [async (ctx, next) => {
         ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
         await next();
