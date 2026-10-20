@@ -177,6 +177,7 @@ const main = async () => {
 
 
 
+
     bot.command("start", async (ctx) => {
         if (ctx.session.locale) {
             await ctx.reply(ctx.t("start"))

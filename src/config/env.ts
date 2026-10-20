@@ -17,6 +17,7 @@ const envSchema = z.object({
     // misspelled legacy name, still accepted so existing .env files keep working
     PROCCESSED_DIR: optional,
 
+    MAX_CONCURRENT_JOBS: z.coerce.number().int().positive().default(2),
     JOB_TIMEOUT_SECONDS: z.coerce.number().positive().default(300),
 
     REDIS_URL: z.string(),

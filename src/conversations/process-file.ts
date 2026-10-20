@@ -2,9 +2,16 @@ import env from "@/config/env"
 import { recordJob } from "@/db/redis"
 import { BotContext } from "@/types/context"
 import { BotConversation } from "@/types/conversation"
+import { JobQueue } from "@/utils/job-queue"
 import logger from "@/utils/logger"
 import { removeFiles } from "@/utils/temp-files"
+import { Api } from "grammy"
 import type { Message } from "grammy/types"
+
+export const jobQueue = new JobQueue(env.MAX_CONCURRENT_JOBS)
+
+// status updates from inside a running job bypass the conversation's api interception
+const api = new Api(env.BOT_TOKEN)
 
 export const userLabel = (ctx: BotContext) => {
     return `${ctx.from?.id} => ${[ctx.from?.first_name, ctx.from?.last_name].filter(v => !!v).join(" ")}`
@@ -33,7 +40,7 @@ type ProcessFileOptions = {
     cleanup?: string[]
 }
 
-// download → process → upload, with status messages and temp file cleanup
+// download → (queue) → process → upload, with status messages and temp file cleanup
 export const processFile = async (conversation: BotConversation, ctx: BotContext, options: ProcessFileOptions) => {
     const chatId = ctx.chat!.id
     const paths = [...(options.cleanup ?? [])]
@@ -64,7 +71,20 @@ export const processFile = async (conversation: BotConversation, ctx: BotContext
 
         await ctx.api.editMessageText(chatId, statusId, ctx.t("processing"))
 
-        await conversation.external(() => options.process(inputPath, outputPath))
+        const processing = ctx.t("processing")
+        const queued = (position: number) => ctx.t("queued", { position })
+        let wasQueued = false
+
+        await conversation.external(() => jobQueue.run(
+            async () => {
+                if (wasQueued) await api.editMessageText(chatId, statusId, processing).catch(() => { })
+                await options.process(inputPath, outputPath)
+            },
+            async (position) => {
+                wasQueued = true
+                await api.editMessageText(chatId, statusId, queued(position))
+            },
+        ))
 
         await ctx.api.editMessageText(chatId, statusId, ctx.t("uploading"))
         await options.send(outputPath)
