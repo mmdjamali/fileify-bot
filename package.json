@@ -1,16 +1,17 @@
 {
-  "name": "bot",
+  "name": "fileify-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Telegram bot for editing and converting photos, videos, and audio",
   "main": "src/bot.ts",
   "scripts": {
     "dev": "nodemon ./src/bot.ts",
     "start": "node ./build/bot.js",
-    "build": "tsc && tsc-alias"
+    "build": "tsc && tsc-alias",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@total-typescript/tsconfig": "^1.0.4",
     "@types/fluent-ffmpeg": "^2.1.27",
