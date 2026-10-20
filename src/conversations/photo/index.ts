@@ -31,6 +31,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
     })
 
     const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers), { otherwise: remindBusy })
+    await callbackCtx.answerCallbackQuery()
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
