@@ -51,6 +51,8 @@ photo-resize-prompt =
 photo-resize-invalid = Invalid format, try again
 photo-resize-too-large = Too large. Width and height must be at most { $max }px.
 
+photo-sticker = 🎭 Make Sticker
+
 
 downloading = ⬇️ Downloading...
 processing = 🔄 Processing...

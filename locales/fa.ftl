@@ -51,6 +51,8 @@ photo-resize-prompt =
 photo-resize-invalid = فرمت نامعتبره، لطفاً دوباره امتحان کنید.
 photo-resize-too-large = ابعاد خیلی بزرگه. عرض و ارتفاع باید حداکثر { $max } پیکسل باشه.
 
+photo-sticker = 🎭 ساخت استیکر
+
 
 downloading = ⬇️ در حال دانلود...
 processing = 🔄 در حال پردازش...

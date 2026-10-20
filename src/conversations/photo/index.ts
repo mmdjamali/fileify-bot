@@ -6,6 +6,7 @@ import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
 import { getImage } from "./media"
 import { resize } from "./resize"
+import { sticker } from "./sticker"
 
 export const PHOTO_CONVERSATION_NAME = "photo"
 
@@ -24,6 +25,8 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
 
     const keyboard = new InlineKeyboard()
         .text(ctx.t("photo-resize"), "photo:resize")
+        .row()
+        .text(ctx.t("photo-sticker"), "photo:sticker")
         .row()
         .text(ctx.t("cancel"), "photo:cancel")
 
@@ -44,6 +47,7 @@ const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) 
         await ctx.reply(ctx.t("canceled"))
     },
     "photo:resize": resize,
+    "photo:sticker": sticker,
 }
 
 export const photoConversation = createConversation(conversationHandler, {
