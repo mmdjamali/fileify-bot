@@ -38,9 +38,9 @@ const main = async () => {
     sweepOldFiles(tempDirs, 0)
     setInterval(() => sweepOldFiles(tempDirs, TEMP_FILE_MAX_AGE), TEMP_FILE_MAX_AGE / 2).unref()
 
-    const bot = new Bot<BotContext>(env.BOT_TOKEN)
+    const bot = new Bot<BotContext>(env.BOT_TOKEN, { client: { apiRoot: env.BOT_API_ROOT } })
 
-    bot.api.config.use(hydrateFiles(env.BOT_TOKEN))
+    bot.api.config.use(hydrateFiles(env.BOT_TOKEN, { apiRoot: env.BOT_API_ROOT }))
 
     const initial = (): SessionData => {
         return {

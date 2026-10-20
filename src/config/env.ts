@@ -8,6 +8,8 @@ const optional = z.string().optional().transform((v) => v || undefined)
 
 const envSchema = z.object({
     BOT_TOKEN: z.string().min(1),
+    // set to a self-hosted Bot API server (e.g. http://telegram-bot-api:8081) to lift the 20 MB limit
+    BOT_API_ROOT: optional,
 
     CHANNELS: list,
     ADMIN_IDS: list.transform((ids) => ids.map(Number)),

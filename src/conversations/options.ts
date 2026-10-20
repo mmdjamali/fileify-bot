@@ -4,7 +4,7 @@ import { hydrateFiles } from "@grammyjs/files"
 import { Middleware } from "grammy"
 
 const files: Middleware<BotContext> = async (ctx, next) => {
-    ctx.api.config.use(hydrateFiles(env.BOT_TOKEN))
+    ctx.api.config.use(hydrateFiles(env.BOT_TOKEN, { apiRoot: env.BOT_API_ROOT }))
     await next()
 }
 

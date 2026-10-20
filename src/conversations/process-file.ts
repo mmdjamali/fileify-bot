@@ -11,7 +11,7 @@ import type { Message } from "grammy/types"
 export const jobQueue = new JobQueue(env.MAX_CONCURRENT_JOBS)
 
 // status updates from inside a running job bypass the conversation's api interception
-const api = new Api(env.BOT_TOKEN)
+const api = new Api(env.BOT_TOKEN, { apiRoot: env.BOT_API_ROOT })
 
 export const userLabel = (ctx: BotContext) => {
     return `${ctx.from?.id} => ${[ctx.from?.first_name, ctx.from?.last_name].filter(v => !!v).join(" ")}`
