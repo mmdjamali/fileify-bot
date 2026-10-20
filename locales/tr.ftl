@@ -24,6 +24,7 @@ video-note = 📹 Video Notu
 video-too-long = Video 60 saniyeden kısa olmalıdır
 video-to-gif = 🎞 GIF'e Dönüştür
 gif-too-long = GIF'e dönüştürmek için video { $seconds } saniyeden kısa olmalıdır
+video-sticker = 🎭 Video Çıkartma
 
 audio = Bu ses dosyasıyla ne yapmak istersiniz? 🤔
 audio-metadata = ✏️ Meta verilerini düzenle

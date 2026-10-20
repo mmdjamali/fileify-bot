@@ -5,6 +5,7 @@ import { createConversation } from "@grammyjs/conversations"
 import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
 import { getVideo } from "./media"
+import { sticker } from "./sticker"
 import { toGif } from "./to-gif"
 import { videoNote } from "./video-note"
 
@@ -27,6 +28,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         .text(ctx.t("video-note"), "video:video-note")
         .row()
         .text(ctx.t("video-to-gif"), "video:to-gif")
+        .text(ctx.t("video-sticker"), "video:sticker")
         .row()
         .text(ctx.t("cancel"), "video:cancel")
 
@@ -45,6 +47,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
 const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) => Promise<void>> = {
     "video:video-note": videoNote,
     "video:to-gif": toGif,
+    "video:sticker": sticker,
     "video:cancel": async (conversation: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
