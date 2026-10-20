@@ -4,6 +4,7 @@ import { BotConversation } from "@/types/conversation"
 import { createConversation } from "@grammyjs/conversations"
 import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
+import { extractAudio } from "./extract-audio"
 import { getVideo } from "./media"
 import { sticker } from "./sticker"
 import { toGif } from "./to-gif"
@@ -30,6 +31,8 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         .text(ctx.t("video-to-gif"), "video:to-gif")
         .text(ctx.t("video-sticker"), "video:sticker")
         .row()
+        .text(ctx.t("video-extract-audio"), "video:extract-audio")
+        .row()
         .text(ctx.t("cancel"), "video:cancel")
 
     const callbackMessage = await ctx.reply(ctx.t("video"), {
@@ -48,6 +51,7 @@ const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) 
     "video:video-note": videoNote,
     "video:to-gif": toGif,
     "video:sticker": sticker,
+    "video:extract-audio": extractAudio,
     "video:cancel": async (conversation: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
