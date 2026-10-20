@@ -31,6 +31,7 @@ no-audio = این ویدیو صدا نداره.
 
 audio = می‌خواهید با این فایل صوتی چه کاری انجام دهید؟ 🤔
 audio-metadata = ✏️ ویرایش اطلاعات متادیتا
+audio-to-voice = 🎙 تبدیل به ویس
 audio-to-mp3 = 🎵 تبدیل به MP3
 audio-new-title = عنوان جدید چی باشه؟
 audio-new-artist = اسم هنرمند جدید چیه؟

@@ -31,6 +31,7 @@ no-audio = Bu videoda ses yok.
 
 audio = Bu ses dosyasıyla ne yapmak istersiniz? 🤔
 audio-metadata = ✏️ Meta verilerini düzenle
+audio-to-voice = 🎙 Sesli Mesaja Dönüştür
 audio-to-mp3 = 🎵 MP3'e Dönüştür
 audio-new-title = Yeni başlık ne olsun?
 audio-new-artist = Yeni sanatçı kim olsun?
