@@ -21,6 +21,10 @@ import { getMissingChannels, joinChannelsKeyboard } from "@/utils/channels"
 import { LANGUAGE_PROMPT, languageKeyboard } from "@/utils/keyboards"
 import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
 
+const IMAGE_TYPES = ["image/jpeg", "image/png"]
+const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"]
+const AUDIO_TYPES = ["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"]
+
 const TEMP_FILE_MAX_AGE = 60 * 60 * 1000
 
 const main = async () => {
@@ -118,68 +122,26 @@ const main = async () => {
     bot.use(audioConversation)
     bot.use(photoConversation)
 
-    bot.on("message:video", ChannelsMiddleware, async (ctx) => {
+    // while a conversation is waiting it swallows new messages, so these only run when the user is free
+    const enter = (name: string) => async (ctx: BotContext) => {
         await ctx.react("🫡")
 
-        await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
-    })
+        await ctx.conversation.enter(name)
+    }
 
-    bot.on("message:animation", ChannelsMiddleware, async (ctx) => {
-        await ctx.react("🫡")
-
-        await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
-    })
-
-    bot.on("message:audio", ChannelsMiddleware, async (ctx) => {
-        await ctx.react("🫡")
-
-        await ctx.conversation.enter(AUDIO_CONVERSATION_NAME)
-    })
-
-    bot.on("message:photo", ChannelsMiddleware, async (ctx) => {
-        await ctx.react("🫡")
-
-        await ctx.conversation.enter(PHOTO_CONVERSATION_NAME)
-    })
+    bot.on(["message:video", "message:animation"], ChannelsMiddleware, enter(VIDEO_CONVERSATION_NAME))
+    bot.on("message:audio", ChannelsMiddleware, enter(AUDIO_CONVERSATION_NAME))
+    bot.on("message:photo", ChannelsMiddleware, enter(PHOTO_CONVERSATION_NAME))
 
     bot.on("message:file", ChannelsMiddleware, async (ctx) => {
-        const file = ctx.message?.document
+        const mimeType = ctx.message?.document?.mime_type ?? ""
 
-        if (!file?.mime_type) {
-            await ctx.reply(ctx.t("unsupported-file"))
-            return
-        }
-
-        if (["image/jpeg", "image/png"].includes(file.mime_type)) {
-            await ctx.react("🫡")
-
-            await ctx.conversation.enter(PHOTO_CONVERSATION_NAME)
-            return
-        }
-
-        if (["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"].includes(file.mime_type)) {
-            await ctx.react("🫡")
-
-            await ctx.conversation.enter(VIDEO_CONVERSATION_NAME)
-            return
-        }
-
-        if (["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"].includes(file.mime_type)) {
-            await ctx.react("🫡")
-
-            await ctx.conversation.enter(AUDIO_CONVERSATION_NAME)
-            return
-        }
+        if (IMAGE_TYPES.includes(mimeType)) return enter(PHOTO_CONVERSATION_NAME)(ctx)
+        if (VIDEO_TYPES.includes(mimeType)) return enter(VIDEO_CONVERSATION_NAME)(ctx)
+        if (AUDIO_TYPES.includes(mimeType)) return enter(AUDIO_CONVERSATION_NAME)(ctx)
 
         await ctx.reply(ctx.t("unsupported-file"))
     })
-
-
-
-
-
-
-
 
     bot.command("start", async (ctx) => {
         if (ctx.session.locale) {
