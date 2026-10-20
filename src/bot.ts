@@ -92,6 +92,16 @@ const main = async () => {
         await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
     })
 
+    bot.command("cancel", async (ctx) => {
+        if (Object.keys(ctx.conversation.active()).length === 0) {
+            await ctx.reply(ctx.t("nothing-to-cancel"))
+            return
+        }
+
+        await ctx.conversation.exitAll()
+        await ctx.reply(ctx.t("canceled"))
+    })
+
     bot.command("stats", async (ctx) => {
         if (!ctx.from || !env.ADMIN_IDS.includes(ctx.from.id)) return
 

@@ -36,6 +36,7 @@ queued = ⏳ In queue (position { $position })...
 
 cancel = ❌ Cancel
 canceled = ❌ Canceled!
+nothing-to-cancel = Nothing to cancel.
 busy = You're already working on a file. Finish it or send /cancel.
 skip = ⏩ Skip
 
