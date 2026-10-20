@@ -36,6 +36,7 @@ audio-to-mp3 = 🎵 تبدیل به MP3
 audio-new-title = عنوان جدید چی باشه؟
 audio-new-artist = اسم هنرمند جدید چیه؟
 audio-new-album = اسم آلبوم جدید چیه؟
+audio-keep-hint = برای نگه داشتن مقدار فعلی، - بفرست.
 audio-new-cover = عکس جدید برای آهنگ چی باشه؟
 audio-cover-invalid = لطفاً یک عکس JPEG یا PNG بفرستید، یا «رد کردن» رو بزنید.
 

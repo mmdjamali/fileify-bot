@@ -7,6 +7,8 @@ import { remindBusy } from "../options";
 import { processFile } from "../process-file";
 import { getAudio } from "./media";
 
+const KEEP = "-"
+
 export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
     const { file: audio, extension } = getAudio(ctx0)
 
@@ -15,9 +17,13 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
         return
     }
 
+    const current = ctx0.message?.audio
+
+    // "-" keeps the current value; ffmpeg copies existing tags we don't override
     const ask = async (key: string) => {
-        await ctx0.reply(ctx0.t(key))
-        return (await conv.waitFor(":text", { otherwise: remindBusy })).message?.text
+        await ctx0.reply(`${ctx0.t(key)}\n\n${ctx0.t("audio-keep-hint")}`)
+        const answer = (await conv.waitFor(":text", { otherwise: remindBusy })).message?.text?.trim()
+        return answer && answer !== KEEP ? answer : undefined
     }
 
     const title = await ask("audio-new-title")
@@ -73,8 +79,8 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
             await updateMetadata(inputPath, outputPath, { title, artist, album }, cover ? coverImagePath : undefined)
         },
         send: (outputPath) => ctx0.replyWithAudio(new InputFile(outputPath, "file_name" in audio ? audio.file_name : undefined), {
-            title,
-            performer: artist,
+            title: title ?? current?.title,
+            performer: artist ?? current?.performer,
             thumbnail: cover ? new InputFile(coverImagePath) : undefined,
         }),
     })

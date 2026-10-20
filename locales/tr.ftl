@@ -36,6 +36,7 @@ audio-to-mp3 = 🎵 MP3'e Dönüştür
 audio-new-title = Yeni başlık ne olsun?
 audio-new-artist = Yeni sanatçı kim olsun?
 audio-new-album = Yeni albüm adı ne olsun?
+audio-keep-hint = Mevcut değeri korumak için - gönder.
 audio-new-cover = Yeni kapak resmi ne olsun?
 audio-cover-invalid = Lütfen JPEG veya PNG bir görsel gönderin ya da Atla'ya dokunun.
 
