@@ -1,14 +1,15 @@
-import env from "@/config/env"
 import { BotContext } from "@/types/context"
-import { Conversation, createConversation } from "@grammyjs/conversations"
-import { hydrateFiles } from "@grammyjs/files"
-import { Context, InlineKeyboard } from "grammy"
+import { BotConversation } from "@/types/conversation"
+import { createConversation } from "@grammyjs/conversations"
+import { InlineKeyboard } from "grammy"
+import { conversationOptions } from "../options"
+import { getImage } from "./media"
 import { resize } from "./resize"
 
 export const PHOTO_CONVERSATION_NAME = "photo"
 
-export const conversationHandler = async (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.photo?.at(-1) || ctx.message?.document
+export const conversationHandler = async (conversation: BotConversation, ctx: BotContext) => {
+    const { file } = getImage(ctx)
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
@@ -29,31 +30,21 @@ export const conversationHandler = async (conversation: Conversation<BotContext,
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(["photo:cancel", "photo:resize"])
+    const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers))
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
-    const handler = handlers[callbackCtx.callbackQuery.data]
-
-    if (!handler) {
-        await ctx.reply("Invalid callback query")
-        return
-    }
-
-    await handler(conversation, ctx)
+    await handlers[callbackCtx.callbackQuery.data](conversation, ctx)
 }
 
-const handlers: Record<string, (conversation: Conversation<BotContext, BotContext>, ctx: BotContext) => Promise<void>> = {
-    "photo:cancel": async (conv: Conversation<BotContext, BotContext>, ctx: BotContext) => {
+const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) => Promise<void>> = {
+    "photo:cancel": async (conv: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     },
-    "photo:resize": resize
+    "photo:resize": resize,
 }
 
 export const photoConversation = createConversation(conversationHandler, {
     id: PHOTO_CONVERSATION_NAME,
-    plugins: [async (ctx, next) => {
-        ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
-        await next();
-    }]
+    ...conversationOptions,
 })
