@@ -26,6 +26,7 @@ video-to-gif = 🎞 تبدیل به گیف
 gif-too-long = برای تبدیل به گیف، ویدیو باید کمتر از { $seconds } ثانیه باشد
 video-sticker = 🎭 استیکر ویدیویی
 video-extract-audio = 🎵 جدا کردن صدا
+video-mute = 🔇 حذف صدا
 no-audio = این ویدیو صدا نداره.
 
 audio = می‌خواهید با این فایل صوتی چه کاری انجام دهید؟ 🤔

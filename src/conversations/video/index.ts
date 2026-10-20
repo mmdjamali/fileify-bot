@@ -6,6 +6,7 @@ import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
 import { extractAudio } from "./extract-audio"
 import { getVideo } from "./media"
+import { mute } from "./mute"
 import { sticker } from "./sticker"
 import { toGif } from "./to-gif"
 import { videoNote } from "./video-note"
@@ -32,6 +33,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         .text(ctx.t("video-sticker"), "video:sticker")
         .row()
         .text(ctx.t("video-extract-audio"), "video:extract-audio")
+        .text(ctx.t("video-mute"), "video:mute")
         .row()
         .text(ctx.t("cancel"), "video:cancel")
 
@@ -52,6 +54,7 @@ const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) 
     "video:to-gif": toGif,
     "video:sticker": sticker,
     "video:extract-audio": extractAudio,
+    "video:mute": mute,
     "video:cancel": async (conversation: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }

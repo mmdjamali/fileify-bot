@@ -26,6 +26,7 @@ video-to-gif = 🎞 Convert to GIF
 gif-too-long = Video must be less than { $seconds } seconds to convert to GIF
 video-sticker = 🎭 Video Sticker
 video-extract-audio = 🎵 Extract Audio
+video-mute = 🔇 Remove Audio
 no-audio = This video has no audio track.
 
 audio = What would you like to do with this audio?🤔

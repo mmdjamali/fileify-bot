@@ -26,6 +26,7 @@ video-to-gif = 🎞 GIF'e Dönüştür
 gif-too-long = GIF'e dönüştürmek için video { $seconds } saniyeden kısa olmalıdır
 video-sticker = 🎭 Video Çıkartma
 video-extract-audio = 🎵 Sesi Ayıkla
+video-mute = 🔇 Sesi Kaldır
 no-audio = Bu videoda ses yok.
 
 audio = Bu ses dosyasıyla ne yapmak istersiniz? 🤔
