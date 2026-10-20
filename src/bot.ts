@@ -16,7 +16,7 @@ import { AUDIO_CONVERSATION_NAME, audioConversation } from "@/conversations/audi
 import { PHOTO_CONVERSATION_NAME, photoConversation } from "@/conversations/photo"
 
 import ChannelsMiddleware from "@/middlewares/channels"
-import { redisStorage } from "@/db/redis"
+import { getStats, redisStorage, trackUser } from "@/db/redis"
 import { getMissingChannels, joinChannelsKeyboard } from "@/utils/channels"
 import { LANGUAGE_PROMPT, languageKeyboard } from "@/utils/keyboards"
 import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
@@ -60,6 +60,11 @@ const main = async () => {
             const locale = ctx.session.locale
             return locale
         }
+    })
+
+    bot.use(async (ctx, next) => {
+        if (ctx.from) trackUser(ctx.from.id)
+        await next()
     })
 
     bot.use(sessionPlugin)
@@ -171,6 +176,7 @@ const main = async () => {
 
 
 
+
     bot.command("start", async (ctx) => {
         if (ctx.session.locale) {
             await ctx.reply(ctx.t("start"))
@@ -182,6 +188,19 @@ const main = async () => {
 
     bot.command("language", async (ctx) => {
         await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
+    })
+
+    bot.command("stats", async (ctx) => {
+        if (!ctx.from || !env.ADMIN_IDS.includes(ctx.from.id)) return
+
+        const { users, jobs } = await getStats()
+        const total = jobs.reduce((sum, job) => sum + job.count, 0)
+        const breakdown = jobs
+            .sort((a, b) => b.count - a.count)
+            .map((job) => `• ${job.action}: ${job.count}`)
+            .join("\n")
+
+        await ctx.reply(`👥 ${users}\n⚙️ ${total}\n\n${breakdown}`.trim())
     })
 
     bot.catch(async (err) => {

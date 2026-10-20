@@ -10,6 +10,7 @@ const envSchema = z.object({
     BOT_TOKEN: z.string().min(1),
 
     CHANNELS: list,
+    ADMIN_IDS: list.transform((ids) => ids.map(Number)),
 
     DOWNLOAD_DIR: z.string().default("./downloads"),
     PROCESSED_DIR: optional,
