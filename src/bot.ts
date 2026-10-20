@@ -2,6 +2,7 @@ import { Bot, Context, session } from "grammy"
 import { conversations } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
 import { I18n } from "@grammyjs/i18n"
+import { limit } from "@grammyjs/ratelimiter"
 import { run, sequentialize } from "@grammyjs/runner"
 import path from "path"
 
@@ -73,6 +74,12 @@ const main = async () => {
 
     // updates run concurrently, but each user's updates stay in order
     bot.use(sequentialize(getSessionKey))
+
+    bot.use(limit({
+        timeFrame: 2000,
+        limit: 3,
+        keyGenerator: (ctx) => ctx.from?.id.toString(),
+    }))
 
     bot.use(async (ctx, next) => {
         if (ctx.from) trackUser(ctx.from.id)
