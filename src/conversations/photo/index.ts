@@ -4,6 +4,7 @@ import { BotConversation } from "@/types/conversation"
 import { createConversation } from "@grammyjs/conversations"
 import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
+import { convert } from "./convert"
 import { getImage } from "./media"
 import { resize } from "./resize"
 import { sticker } from "./sticker"
@@ -27,6 +28,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         .text(ctx.t("photo-resize"), "photo:resize")
         .row()
         .text(ctx.t("photo-sticker"), "photo:sticker")
+        .text(ctx.t("photo-convert"), "photo:convert")
         .row()
         .text(ctx.t("cancel"), "photo:cancel")
 
@@ -48,6 +50,7 @@ const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) 
     },
     "photo:resize": resize,
     "photo:sticker": sticker,
+    "photo:convert": convert,
 }
 
 export const photoConversation = createConversation(conversationHandler, {

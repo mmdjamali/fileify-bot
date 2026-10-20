@@ -52,6 +52,8 @@ photo-resize-invalid = Geçersiz format, lütfen tekrar deneyin.
 photo-resize-too-large = Çok büyük. Genişlik ve yükseklik en fazla { $max }px olmalıdır.
 
 photo-sticker = 🎭 Çıkartma Yap
+photo-convert = 🔁 Formatı Dönüştür
+photo-convert-prompt = Hangi formata dönüştürülsün?
 
 downloading = ⬇️ İndiriliyor...
 processing = 🔄 İşleniyor...
