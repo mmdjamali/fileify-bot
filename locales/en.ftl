@@ -31,6 +31,7 @@ no-audio = This video has no audio track.
 
 audio = What would you like to do with this audio?🤔
 audio-metadata = ✏️ Edit Metadata
+audio-to-mp3 = 🎵 Convert to MP3
 audio-new-title = What's the new title?
 audio-new-artist = What's the new artist?
 audio-new-album = What's the new album?

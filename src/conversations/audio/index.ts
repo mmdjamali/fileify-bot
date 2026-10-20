@@ -6,6 +6,7 @@ import { InlineKeyboard } from "grammy"
 import { conversationOptions, remindBusy } from "../options"
 import { getAudio } from "./media"
 import { metadata } from "./metadata"
+import { toMp3 } from "./to-mp3"
 
 export const AUDIO_CONVERSATION_NAME = "audio"
 
@@ -25,6 +26,8 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
     const keyboard = new InlineKeyboard()
         .text(ctx.t("audio-metadata"), "audio:edit-metadata")
         .row()
+        .text(ctx.t("audio-to-mp3"), "audio:to-mp3")
+        .row()
         .text(ctx.t("cancel"), "audio:cancel")
 
     const callbackMessage = await ctx.reply(ctx.t("audio"), {
@@ -41,6 +44,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
 
 const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) => Promise<void>> = {
     "audio:edit-metadata": metadata,
+    "audio:to-mp3": toMp3,
     "audio:cancel": async (conv: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
