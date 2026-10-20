@@ -27,7 +27,7 @@ const LOCALES = ["en", "fa", "tr"] as const
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
 const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"]
-const AUDIO_TYPES = ["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"]
+const AUDIO_TYPES = ["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/flac", "audio/x-ms-wma", "audio/mp4", "audio/x-m4a", "audio/aac"]
 
 const TEMP_FILE_MAX_AGE = 60 * 60 * 1000
 
