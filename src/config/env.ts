@@ -16,6 +16,8 @@ const envSchema = z.object({
     // misspelled legacy name, still accepted so existing .env files keep working
     PROCCESSED_DIR: optional,
 
+    JOB_TIMEOUT_SECONDS: z.coerce.number().positive().default(300),
+
     REDIS_URL: z.string(),
 }).transform(({ PROCCESSED_DIR, PROCESSED_DIR, ...env }) => ({
     ...env,
