@@ -7,6 +7,7 @@ import sharp from "sharp";
 import { remindBusy } from "../options";
 import { processFile } from "../process-file";
 import { getImage } from "./media";
+import { parseSize } from "./parse-size";
 
 const MAX_DIMENSION = 4096
 
@@ -41,8 +42,7 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
     const cpt1 = conv.checkpoint()
 
     const ctx1 = await conv.waitFor(":text", { otherwise: remindBusy })
-    const match = ctx1.message?.text?.match(/^(\d+)x(\d+)$/)
-    const size = match && parseInt(match[1]) > 0 && parseInt(match[2]) > 0 ? { width: parseInt(match[1]), height: parseInt(match[2]) } : null
+    const size = parseSize(ctx1.message?.text ?? "", current)
 
     if (!size) {
         await ctx0.reply(ctx0.t("photo-resize-invalid"))

@@ -46,7 +46,8 @@ photo-resize-prompt =
     📐 Mevcut boyut: { $width }x{ $height }
 
     Hangi boyutlara yeniden boyutlandırmak istersiniz?
-    WIDTHxHEIGHT formatında yanıt verin (örneğin 512x512)
+    WIDTHxHEIGHT formatında yanıt verin (örneğin 512x512),
+    en-boy oranını korumak için 512x veya x512, ölçeklemek için 50%.
 photo-resize-invalid = Geçersiz format, lütfen tekrar deneyin.
 photo-resize-too-large = Çok büyük. Genişlik ve yükseklik en fazla { $max }px olmalıdır.
 

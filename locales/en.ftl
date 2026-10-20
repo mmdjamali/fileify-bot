@@ -46,7 +46,8 @@ photo-resize-prompt =
     📐 Current size: { $width }x{ $height }
 
     What dimensions would you like to resize it to?
-    Reply with WIDTHxHEIGHT (like 512x512)
+    Reply with WIDTHxHEIGHT (like 512x512),
+    512x or x512 to keep the aspect ratio, or 50% to scale it.
 photo-resize-invalid = Invalid format, try again
 photo-resize-too-large = Too large. Width and height must be at most { $max }px.
 
