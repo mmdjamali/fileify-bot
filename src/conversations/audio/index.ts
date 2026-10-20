@@ -1,14 +1,15 @@
 import { BotContext } from "@/types/context"
-import { Conversation, createConversation } from "@grammyjs/conversations"
-import { Context, InlineKeyboard } from "grammy"
-import { hydrateFiles } from "@grammyjs/files"
-import env from "@/config/env"
+import { BotConversation } from "@/types/conversation"
+import { createConversation } from "@grammyjs/conversations"
+import { InlineKeyboard } from "grammy"
+import { conversationOptions } from "../options"
+import { getAudio } from "./media"
 import { metadata } from "./metadata"
 
 export const AUDIO_CONVERSATION_NAME = "audio"
 
-export const conversationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.audio ?? ctx.message?.document
+export const conversationHandler = async (conversation: BotConversation, ctx: BotContext) => {
+    const { file } = getAudio(ctx)
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
@@ -29,31 +30,21 @@ export const conversationHandler = async (conversation: Conversation<Context, Bo
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(["audio:edit-metadata", "audio:cancel"])
+    const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers))
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
-    const handler = handlers[callbackCtx.callbackQuery.data]
-
-    if (!handler) {
-        await ctx.reply("Invalid callback query")
-        return
-    }
-
-    await handler(conversation, ctx)
+    await handlers[callbackCtx.callbackQuery.data](conversation, ctx)
 }
 
-const handlers: Record<string, (conversation: Conversation<Context, BotContext>, ctx: BotContext) => Promise<void>> = {
+const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) => Promise<void>> = {
     "audio:edit-metadata": metadata,
-    "audio:cancel": async (conv: Conversation<Context, BotContext>, ctx: BotContext) => {
+    "audio:cancel": async (conv: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
 }
 
 export const audioConversation = createConversation(conversationHandler, {
     id: AUDIO_CONVERSATION_NAME,
-    plugins: [async (ctx, next) => {
-        ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
-        await next();
-    }]
+    ...conversationOptions,
 })
