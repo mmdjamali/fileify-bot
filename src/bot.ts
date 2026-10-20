@@ -17,7 +17,7 @@ import { AUDIO_CONVERSATION_NAME, audioConversation } from "@/conversations/audi
 import { PHOTO_CONVERSATION_NAME, photoConversation } from "@/conversations/photo"
 
 import ChannelsMiddleware from "@/middlewares/channels"
-import { getStats, redisStorage, trackUser } from "@/db/redis"
+import redis, { getStats, redisStorage, trackUser } from "@/db/redis"
 import { getMissingChannels, joinChannelsKeyboard } from "@/utils/channels"
 import { LANGUAGE_PROMPT, languageKeyboard } from "@/utils/keyboards"
 import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
@@ -224,7 +224,17 @@ const main = async () => {
     const botName = await bot.api.getMyName()
     logger.info(`${botName.name} started!`.toLocaleLowerCase())
 
-    run(bot)
+    const runner = run(bot)
+
+    const stop = async () => {
+        logger.info("stopping...")
+
+        if (runner.isRunning()) await runner.stop()
+        await redis.quit()
+    }
+
+    process.once("SIGINT", stop)
+    process.once("SIGTERM", stop)
 }
 
 main()
