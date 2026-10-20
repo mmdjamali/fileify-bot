@@ -4,6 +4,7 @@ import { BotConversation } from "@/types/conversation";
 import { removeFiles } from "@/utils/temp-files";
 import { InputFile } from "grammy";
 import sharp from "sharp";
+import { remindBusy } from "../options";
 import { processFile } from "../process-file";
 import { getImage } from "./media";
 
@@ -39,7 +40,7 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
 
     const cpt1 = conv.checkpoint()
 
-    const ctx1 = await conv.waitFor(":text")
+    const ctx1 = await conv.waitFor(":text", { otherwise: remindBusy })
     const match = ctx1.message?.text?.match(/^(\d+)x(\d+)$/)
     const size = match && parseInt(match[1]) > 0 && parseInt(match[2]) > 0 ? { width: parseInt(match[1]), height: parseInt(match[2]) } : null
 

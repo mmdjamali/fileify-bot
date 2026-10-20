@@ -3,6 +3,7 @@ import updateMetadata from "@/pkg/ffmpeg/update-metadata";
 import { BotContext } from "@/types/context";
 import { BotConversation } from "@/types/conversation";
 import { InlineKeyboard, InputFile } from "grammy";
+import { remindBusy } from "../options";
 import { processFile } from "../process-file";
 import { getAudio } from "./media";
 
@@ -16,7 +17,7 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
 
     const ask = async (key: string) => {
         await ctx0.reply(ctx0.t(key))
-        return (await conv.waitFor(":text")).message?.text
+        return (await conv.waitFor(":text", { otherwise: remindBusy })).message?.text
     }
 
     const title = await ask("audio-new-title")
@@ -32,7 +33,9 @@ export const metadata = async (conv: BotConversation, ctx0: BotContext) => {
         reply_markup: coverImageKeyboard
     })
 
-    const ctx4 = await conv.waitFor([":photo", ":document", "callback_query:data"])
+    const ctx4 = await conv.waitFor([":photo", ":document", "callback_query:data"], {
+        otherwise: (ctx) => ctx.reply(ctx.t("audio-cover-invalid")),
+    })
 
     if (ctx4.callbackQuery) {
         await ctx4.answerCallbackQuery()

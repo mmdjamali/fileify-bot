@@ -2,7 +2,7 @@ import { BotContext } from "@/types/context"
 import { BotConversation } from "@/types/conversation"
 import { createConversation } from "@grammyjs/conversations"
 import { InlineKeyboard } from "grammy"
-import { conversationOptions } from "../options"
+import { conversationOptions, remindBusy } from "../options"
 import { getVideo } from "./media"
 import { toGif } from "./to-gif"
 import { videoNote } from "./video-note"
@@ -33,7 +33,7 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers))
+    const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers), { otherwise: remindBusy })
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 

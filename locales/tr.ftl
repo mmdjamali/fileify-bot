@@ -35,6 +35,7 @@ queued = ⏳ Sıradasın ({ $position }. sıra)...
 
 cancel = ❌ İptal
 canceled = ❌ İptal edildi!
+busy = Zaten bir dosya üzerinde çalışıyorsun. Önce onu bitir veya /cancel gönder.
 skip = ⏩ Atla
 
 error = Bir şeyler yanlış gitti, tekrar deneyin!

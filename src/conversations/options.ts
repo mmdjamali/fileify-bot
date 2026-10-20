@@ -13,3 +13,9 @@ export const conversationOptions = {
     // an abandoned menu or prompt stops blocking the user after 10 minutes
     maxMillisecondsToWait: 10 * 60 * 1000,
 }
+
+// a wait drops updates it doesn't match; tell the user why instead of ignoring them silently
+export const remindBusy = async (ctx: BotContext) => {
+    if (ctx.message) await ctx.reply(ctx.t("busy"))
+    else if (ctx.callbackQuery) await ctx.answerCallbackQuery()
+}
