@@ -1,4 +1,19 @@
-start = Merhaba! Düzenlemek istediğin bir dosyan mı var?
+start = Merhaba! Düzenlemek istediğin bir dosyan mı var? Bir fotoğraf, video, GIF, ses dosyası veya sesli mesaj gönder. /help
+
+help =
+    📁 Bir dosya gönder ve ne yapılacağını seç:
+
+    🎥 Video ve GIF: video notu, GIF, video çıkartma, sesi ayıkla, sesi kaldır
+    🎵 Ses ve sesli mesaj: etiketleri ve kapağı düzenle, sesli mesaja veya MP3'e dönüştür
+    🖼 Fotoğraf: yeniden boyutlandır, çıkartma yap, JPEG/PNG/WebP'ye dönüştür
+
+    Dosya boyutu en fazla { $size } MB.
+    /cancel mevcut işlemi iptal eder · /language dili değiştirir
+
+command-start = Başlat
+command-help = Yardım ve özellikler
+command-cancel = Mevcut işlemi iptal et
+command-language = Dili değiştir
 
 join-channels = Devam edebilmek için aşağıdaki kanallara abone olmalısınız.
 check-join = Abone oldum ✅

@@ -1,4 +1,19 @@
-start = Hey! Got a file to tweak?
+start = Hey! Got a file to tweak? Send a photo, video, GIF, audio file or voice message. /help
+
+help =
+    📁 Send me a file and pick what to do with it:
+
+    🎥 Videos & GIFs: video note, GIF, video sticker, extract audio, remove audio
+    🎵 Audio & voice: edit tags and cover, convert to voice message or MP3
+    🖼 Photos: resize, make a sticker, convert to JPEG/PNG/WebP
+
+    Files up to { $size } MB.
+    /cancel stops the current task · /language changes the language
+
+command-start = Start
+command-help = Help and features
+command-cancel = Cancel the current task
+command-language = Change language
 
 join-channels = You need to join the channels below to proceed.
 check-join = I joined ✅

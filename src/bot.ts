@@ -21,6 +21,8 @@ import { getMissingChannels, joinChannelsKeyboard } from "@/utils/channels"
 import { LANGUAGE_PROMPT, languageKeyboard } from "@/utils/keyboards"
 import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
 
+const LOCALES = ["en", "fa", "tr"] as const
+
 const IMAGE_TYPES = ["image/jpeg", "image/png"]
 const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv", "video/x-flv", "video/webm"]
 const AUDIO_TYPES = ["audio/mp3", "audio/mpeg", "audio/ogg", "audio/wav", "audio/x-flac", "audio/x-ms-wma"]
@@ -88,6 +90,10 @@ const main = async () => {
         await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
     })
 
+    bot.command("help", async (ctx) => {
+        await ctx.reply(ctx.t("help", { size: env.MAX_FILE_SIZE_MB }))
+    })
+
     bot.command("language", async (ctx) => {
         await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
     })
@@ -133,7 +139,7 @@ const main = async () => {
         )
     })
 
-    bot.callbackQuery(["language:fa", "language:en", "language:tr"], async (ctx) => {
+    bot.callbackQuery(LOCALES.map((locale) => `language:${locale}`), async (ctx) => {
         await ctx.answerCallbackQuery()
 
         const locale = ctx.callbackQuery.data.split(":")[1]
@@ -191,6 +197,17 @@ const main = async () => {
             console.log(err)
         }
     })
+
+    for (const locale of LOCALES) {
+        const t = (key: string) => i18n.t(locale, key)
+
+        await bot.api.setMyCommands([
+            { command: "start", description: t("command-start") },
+            { command: "help", description: t("command-help") },
+            { command: "cancel", description: t("command-cancel") },
+            { command: "language", description: t("command-language") },
+        ], locale === "en" ? {} : { language_code: locale })
+    }
 
     const botName = await bot.api.getMyName()
     logger.info(`${botName.name} started!`.toLocaleLowerCase())
