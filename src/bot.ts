@@ -2,6 +2,7 @@ import { Bot, Context, session } from "grammy"
 import { conversations } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
 import { I18n } from "@grammyjs/i18n"
+import { run, sequentialize } from "@grammyjs/runner"
 import path from "path"
 
 import logger from "@/utils/logger"
@@ -46,15 +47,17 @@ const main = async () => {
         }
     }
 
+    const getSessionKey = (ctx: Context) => {
+        if (ctx.from?.id) {
+            return `user:${ctx.from?.id.toString()}`
+        }
+
+        return ctx.chatId ? `chat:${ctx.chatId.toString()}` : undefined
+    }
+
     const sessionPlugin = session({
         initial,
-        getSessionKey: (ctx: Context) => {
-            if (ctx.from?.id) {
-                return `user:${ctx.from?.id.toString()}`
-            }
-
-            return ctx.chatId ? `chat:${ctx.chatId.toString()}` : undefined
-        },
+        getSessionKey,
         storage: redisStorage,
     })
 
@@ -67,6 +70,9 @@ const main = async () => {
             return locale
         }
     })
+
+    // updates run concurrently, but each user's updates stay in order
+    bot.use(sequentialize(getSessionKey))
 
     bot.use(async (ctx, next) => {
         if (ctx.from) trackUser(ctx.from.id)
@@ -213,12 +219,12 @@ const main = async () => {
         ], locale === "en" ? {} : { language_code: locale })
     }
 
+    await bot.api.deleteWebhook({ drop_pending_updates: true })
+
     const botName = await bot.api.getMyName()
     logger.info(`${botName.name} started!`.toLocaleLowerCase())
 
-    bot.start({
-        drop_pending_updates: true
-    })
+    run(bot)
 }
 
 main()

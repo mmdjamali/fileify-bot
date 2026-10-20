@@ -27,6 +27,7 @@
     "@grammyjs/emoji": "^1.2.0",
     "@grammyjs/files": "^1.1.1",
     "@grammyjs/i18n": "^1.1.2",
+    "@grammyjs/runner": "^2.0.3",
     "@grammyjs/storage-redis": "^2.5.1",
     "dotenv": "^16.6.1",
     "fluent-ffmpeg": "^2.1.3",
