@@ -185,7 +185,7 @@ const main = async () => {
         await ctx.conversation.enter(name)
     }
 
-    bot.on(["message:video", "message:animation"], ChannelsMiddleware, enter(VIDEO_CONVERSATION_NAME))
+    bot.on(["message:video", "message:animation", "message:video_note"], ChannelsMiddleware, enter(VIDEO_CONVERSATION_NAME))
     bot.on("message:audio", ChannelsMiddleware, enter(AUDIO_CONVERSATION_NAME))
     bot.on("message:photo", ChannelsMiddleware, enter(PHOTO_CONVERSATION_NAME))
 

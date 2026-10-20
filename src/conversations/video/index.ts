@@ -27,8 +27,11 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
     }
 
     const keyboard = new InlineKeyboard()
-        .text(ctx.t("video-note"), "video:video-note")
-        .row()
+
+    // a round video is already a video note
+    if (!ctx.message?.video_note) keyboard.text(ctx.t("video-note"), "video:video-note").row()
+
+    keyboard
         .text(ctx.t("video-to-gif"), "video:to-gif")
         .text(ctx.t("video-sticker"), "video:sticker")
         .row()
