@@ -1,5 +1,5 @@
 import { RedisAdapter } from "@grammyjs/storage-redis";
-import redis from ".";
+import redis from "./client";
 
 export const redisStorage = new RedisAdapter({
     instance: redis,
