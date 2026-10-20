@@ -63,7 +63,7 @@ export const resize = async (conv: BotConversation, ctx0: BotContext) => {
         }
         msg = await ctx0.reply(ctx0.t("processing"))
 
-        outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-photo.${format}`
+        outputPath = `${env.PROCESSED_DIR}/${file.file_unique_id}-${await conv.now()}-photo.${format}`
 
         await conv.external(() => sharp(inputPath!)
             .resize(width, height)

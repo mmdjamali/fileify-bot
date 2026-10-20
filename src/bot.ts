@@ -28,7 +28,7 @@ const createFolderIfNotExists = (path: string) => {
 }
 
 const main = async () => {
-    [env.DOWNLOAD_DIR, env.PROCCESSED_DIR].forEach(createFolderIfNotExists)
+    [env.DOWNLOAD_DIR, env.PROCESSED_DIR].forEach(createFolderIfNotExists)
 
     const bot = new Bot<BotContext>(env.BOT_TOKEN)
 

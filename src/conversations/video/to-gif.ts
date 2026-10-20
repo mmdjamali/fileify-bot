@@ -47,7 +47,7 @@ export const toGif = async (conversation: BotConversation, ctx0: BotContext) => 
 
         await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("processing"))
 
-        outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${Date.now()}-gif.gif`
+        outputPath = `${env.PROCESSED_DIR}/${file.file_unique_id}-${Date.now()}-gif.gif`
         await conversation.external(() => convertVideoToGif(inputPath!, outputPath!))
 
         await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("uploading"))

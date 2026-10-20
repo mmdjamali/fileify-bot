@@ -47,7 +47,7 @@ export const videoNote = async (conversation: BotConversation, ctx0: BotContext)
 
         await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("processing"))
 
-        outputPath = `${env.PROCCESSED_DIR}/${file.file_unique_id}-${Date.now()}-video-note.mp4`
+        outputPath = `${env.PROCESSED_DIR}/${file.file_unique_id}-${Date.now()}-video-note.mp4`
         await conversation.external(() => convertVideoToSquare(inputPath!, outputPath!))
 
         await ctx0.api.editMessageText(ctx0.chat.id, msg.message_id, ctx0.t("uploading"))
