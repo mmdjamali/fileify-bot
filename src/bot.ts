@@ -1,6 +1,8 @@
-import { Bot, Context, InlineKeyboard, session } from "grammy"
+import { Bot, Context, session } from "grammy"
 import { conversations } from "@grammyjs/conversations"
 import { hydrateFiles } from "@grammyjs/files"
+import { I18n } from "@grammyjs/i18n"
+import path from "path"
 
 import logger from "@/utils/logger"
 
@@ -14,11 +16,9 @@ import { AUDIO_CONVERSATION_NAME, audioConversation } from "@/conversations/audi
 import { PHOTO_CONVERSATION_NAME, photoConversation } from "@/conversations/photo"
 
 import ChannelsMiddleware from "@/middlewares/channels"
-import { ChatMember } from "grammy/types"
-import { isChannelMember } from "@/utils/is-channel-member"
-import { I18n } from "@grammyjs/i18n"
-import path from "path"
 import { redisStorage } from "@/db/redis"
+import { getMissingChannels, joinChannelsKeyboard } from "@/utils/channels"
+import { LANGUAGE_PROMPT, languageKeyboard } from "@/utils/keyboards"
 import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
 
 const TEMP_FILE_MAX_AGE = 60 * 60 * 1000
@@ -72,26 +72,13 @@ const main = async () => {
     bot.callbackQuery("check_membership", async (ctx) => {
         await ctx.answerCallbackQuery()
 
-        const channels = await Promise.all<ChatMember | null>(
-            env.CHANNELS.map((channel) => ctx.api.getChatMember(channel, ctx.from!.id).catch(() => null))
-        )
+        const missing = await getMissingChannels(ctx.api, ctx.from.id)
 
-        let isMemberToAll = true;
-
-        channels.forEach((member, idx) => {
-            if (member) {
-                const isMember = isChannelMember(member);
-                isMemberToAll = isMemberToAll && isMember
-
-                if (isMember || !env.CHANNELS[idx]) return
-            }
-        })
-
-        if (!isMemberToAll) return
+        if (missing.length > 0) return
 
         await Promise.all(
             [
-                ctx.api.deleteMessage(ctx.chat!.id, ctx.callbackQuery.message!.message_id),
+                ctx.deleteMessage(),
                 ctx.reply(ctx.t("start"))
             ]
         )
@@ -105,38 +92,18 @@ const main = async () => {
         ctx.session.locale = locale
         await ctx.i18n.renegotiateLocale()
 
-        await ctx.api.deleteMessage(ctx.chat!.id, ctx.callbackQuery.message!.message_id)
+        await ctx.deleteMessage()
 
-        const channels = await Promise.all<ChatMember | null>(
-            env.CHANNELS.map((channel) => ctx.api.getChatMember(channel, ctx.from!.id).catch(() => null))
-        )
+        const missing = await getMissingChannels(ctx.api, ctx.from.id)
 
-        let isMemberToAll = true;
-
-        const inlineKeyboard = new InlineKeyboard()
-
-        channels.forEach((member, idx) => {
-            if (member) {
-                const isMember = isChannelMember(member);
-                isMemberToAll = isMemberToAll && isMember
-
-                if (isMember || !env.CHANNELS[idx]) return
-
-                inlineKeyboard.url(env.CHANNELS[idx], `t.me/${env.CHANNELS[idx].slice(1)}`).row()
-            }
-        })
-
-        if (isMemberToAll) {
+        if (missing.length === 0) {
             await ctx.reply(ctx.t("start"))
             return
         }
 
-        inlineKeyboard.text(ctx.t("check-join"), "check_membership")
-
         await ctx.reply(ctx.t("join-channels"), {
-            reply_markup: inlineKeyboard,
+            reply_markup: joinChannelsKeyboard(ctx, missing),
         });
-
     })
 
     bot.use(videoConversation)
@@ -199,27 +166,18 @@ const main = async () => {
         await ctx.reply(ctx.t("unsupported-file"))
     })
 
+
     bot.command("start", async (ctx) => {
         if (ctx.session.locale) {
             await ctx.reply(ctx.t("start"))
             return
         }
 
-        const inlineKeyboard = new InlineKeyboard()
-            .text("🇬🇧 English", "language:en")
-            .text("🇮🇷 فارسی", "language:fa")
-            .text("🇹🇷 Türkçe", "language:tr")
-
-        await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
+        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
     })
 
     bot.command("language", async (ctx) => {
-        const inlineKeyboard = new InlineKeyboard()
-            .text("🇬🇧 English", "language:en")
-            .text("🇮🇷 فارسی", "language:fa")
-            .text("🇹🇷 Türkçe", "language:tr")
-
-        await ctx.reply("Select your language (زبان خود را انتخاب کنید)", { reply_markup: inlineKeyboard })
+        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
     })
 
     bot.catch(async (err) => {
