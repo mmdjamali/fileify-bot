@@ -70,11 +70,14 @@ const main = async () => {
     }))
 
     bot.callbackQuery("check_membership", async (ctx) => {
-        await ctx.answerCallbackQuery()
-
         const missing = await getMissingChannels(ctx.api, ctx.from.id)
 
-        if (missing.length > 0) return
+        if (missing.length > 0) {
+            await ctx.answerCallbackQuery({ text: ctx.t("not-joined-yet"), show_alert: true })
+            return
+        }
+
+        await ctx.answerCallbackQuery()
 
         await Promise.all(
             [
@@ -165,6 +168,7 @@ const main = async () => {
 
         await ctx.reply(ctx.t("unsupported-file"))
     })
+
 
 
     bot.command("start", async (ctx) => {

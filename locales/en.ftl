@@ -2,6 +2,7 @@ start = Hey! Got a file to tweak?
 
 join-channels = You need to join the channels below to proceed.
 check-join = I joined ✅
+not-joined-yet = You haven't joined all the channels yet.
 
 video = What would you like to do with this video?🤔
 video-note = 📹 Video Note
