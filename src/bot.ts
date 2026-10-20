@@ -19,16 +19,16 @@ import { isChannelMember } from "@/utils/is-channel-member"
 import { I18n } from "@grammyjs/i18n"
 import path from "path"
 import { redisStorage } from "@/db/redis"
-import { existsSync, mkdirSync } from "fs"
+import { ensureDirs, sweepOldFiles } from "@/utils/temp-files"
 
-const createFolderIfNotExists = (path: string) => {
-    if (!existsSync(path)) {
-        mkdirSync(path, { recursive: true })
-    }
-}
+const TEMP_FILE_MAX_AGE = 60 * 60 * 1000
 
 const main = async () => {
-    [env.DOWNLOAD_DIR, env.PROCESSED_DIR].forEach(createFolderIfNotExists)
+    const tempDirs = [env.DOWNLOAD_DIR, env.PROCESSED_DIR]
+
+    ensureDirs(tempDirs)
+    sweepOldFiles(tempDirs, 0)
+    setInterval(() => sweepOldFiles(tempDirs, TEMP_FILE_MAX_AGE), TEMP_FILE_MAX_AGE / 2).unref()
 
     const bot = new Bot<BotContext>(env.BOT_TOKEN)
 
