@@ -10,4 +10,6 @@ const files: Middleware<BotContext> = async (ctx, next) => {
 
 export const conversationOptions = {
     plugins: [files],
+    // an abandoned menu or prompt stops blocking the user after 10 minutes
+    maxMillisecondsToWait: 10 * 60 * 1000,
 }
