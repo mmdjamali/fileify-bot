@@ -78,6 +78,33 @@ const main = async () => {
         plugins: [sessionPlugin, i18n]
     }))
 
+    // commands and buttons are registered before the conversations so a waiting prompt can't swallow them
+    bot.command("start", async (ctx) => {
+        if (ctx.session.locale) {
+            await ctx.reply(ctx.t("start"))
+            return
+        }
+
+        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
+    })
+
+    bot.command("language", async (ctx) => {
+        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
+    })
+
+    bot.command("stats", async (ctx) => {
+        if (!ctx.from || !env.ADMIN_IDS.includes(ctx.from.id)) return
+
+        const { users, jobs } = await getStats()
+        const total = jobs.reduce((sum, job) => sum + job.count, 0)
+        const breakdown = jobs
+            .sort((a, b) => b.count - a.count)
+            .map((job) => `• ${job.action}: ${job.count}`)
+            .join("\n")
+
+        await ctx.reply(`👥 ${users}\n⚙️ ${total}\n\n${breakdown}`.trim())
+    })
+
     bot.callbackQuery("check_membership", async (ctx) => {
         const missing = await getMissingChannels(ctx.api, ctx.from.id)
 
@@ -141,32 +168,6 @@ const main = async () => {
         if (AUDIO_TYPES.includes(mimeType)) return enter(AUDIO_CONVERSATION_NAME)(ctx)
 
         await ctx.reply(ctx.t("unsupported-file"))
-    })
-
-    bot.command("start", async (ctx) => {
-        if (ctx.session.locale) {
-            await ctx.reply(ctx.t("start"))
-            return
-        }
-
-        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
-    })
-
-    bot.command("language", async (ctx) => {
-        await ctx.reply(LANGUAGE_PROMPT, { reply_markup: languageKeyboard() })
-    })
-
-    bot.command("stats", async (ctx) => {
-        if (!ctx.from || !env.ADMIN_IDS.includes(ctx.from.id)) return
-
-        const { users, jobs } = await getStats()
-        const total = jobs.reduce((sum, job) => sum + job.count, 0)
-        const breakdown = jobs
-            .sort((a, b) => b.count - a.count)
-            .map((job) => `• ${job.action}: ${job.count}`)
-            .join("\n")
-
-        await ctx.reply(`👥 ${users}\n⚙️ ${total}\n\n${breakdown}`.trim())
     })
 
     bot.catch(async (err) => {
