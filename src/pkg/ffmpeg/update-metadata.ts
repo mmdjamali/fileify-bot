@@ -20,6 +20,11 @@ const updateMetadata = (
             .outputOptions('-c', 'copy')
             .outputOptions('-c:v', 'mjpeg')
             .outputOptions('-disposition:v', 'attached_pic')
+    } else {
+        // copy every stream (including an existing cover) instead of re-encoding the audio
+        command
+            .outputOptions('-map', '0')
+            .outputOptions('-c', 'copy')
     }
 
     return save(command, outputPath);
