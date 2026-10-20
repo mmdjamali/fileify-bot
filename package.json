@@ -7,7 +7,8 @@
     "dev": "nodemon ./src/bot.ts",
     "start": "node ./build/bot.js",
     "build": "tsc && tsc-alias",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
   },
   "keywords": [],
   "author": "",
