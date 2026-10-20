@@ -25,10 +25,17 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
     }
 
     const keyboard = new InlineKeyboard()
-        .text(ctx.t("audio-metadata"), "audio:edit-metadata")
-        .row()
-        .text(ctx.t("audio-to-voice"), "audio:to-voice")
-        .row()
+
+    // voice messages have no tags worth editing and are already voice
+    if (!ctx.message?.voice) {
+        keyboard
+            .text(ctx.t("audio-metadata"), "audio:edit-metadata")
+            .row()
+            .text(ctx.t("audio-to-voice"), "audio:to-voice")
+            .row()
+    }
+
+    keyboard
         .text(ctx.t("audio-to-mp3"), "audio:to-mp3")
         .row()
         .text(ctx.t("cancel"), "audio:cancel")

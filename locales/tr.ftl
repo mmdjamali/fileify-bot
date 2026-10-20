@@ -61,6 +61,6 @@ busy = Zaten bir dosya üzerinde çalışıyorsun. Önce onu bitir veya /cancel 
 skip = ⏩ Atla
 
 error = Bir şeyler yanlış gitti, tekrar deneyin!
-unsupported-file = Desteklenmeyen dosya türü. Fotoğraf, video, GIF veya ses dosyası gönderin.
+unsupported-file = Desteklenmeyen dosya türü. Fotoğraf, video, GIF, ses dosyası veya sesli mesaj gönderin.
 
 file-size-error = Dosya boyutu { $size } MB'tan küçük olmalıdır

@@ -62,6 +62,6 @@ busy = You're already working on a file. Finish it or send /cancel.
 skip = ⏩ Skip
 
 error = Something went wrong, try again!
-unsupported-file = Unsupported file type. Send a photo, video, GIF, or audio file.
+unsupported-file = Unsupported file type. Send a photo, video, GIF, audio file, or voice message.
 
 file-size-error = File size must be less than { $size } MB
