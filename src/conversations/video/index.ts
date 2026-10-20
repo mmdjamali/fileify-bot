@@ -1,3 +1,4 @@
+import env from "@/config/env"
 import { BotContext } from "@/types/context"
 import { BotConversation } from "@/types/conversation"
 import { createConversation } from "@grammyjs/conversations"
@@ -17,8 +18,8 @@ export const conversationHandler = async (conversation: BotConversation, ctx: Bo
         return
     }
 
-    if (file.file_size && file.file_size > 20 * 1024 * 1024) {
-        await ctx.reply(ctx.t("file-size-error", { size: 20 }))
+    if (file.file_size && file.file_size > env.MAX_FILE_SIZE_MB * 1024 * 1024) {
+        await ctx.reply(ctx.t("file-size-error", { size: env.MAX_FILE_SIZE_MB }))
         return
     }
 
