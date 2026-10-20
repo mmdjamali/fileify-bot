@@ -1,15 +1,16 @@
 import { BotContext } from "@/types/context"
-import { Conversation, createConversation } from "@grammyjs/conversations"
-import { Context, InlineKeyboard } from "grammy"
-import { videoNote } from "./video-note"
+import { BotConversation } from "@/types/conversation"
+import { createConversation } from "@grammyjs/conversations"
+import { InlineKeyboard } from "grammy"
+import { conversationOptions } from "../options"
+import { getVideo } from "./media"
 import { toGif } from "./to-gif"
-import { hydrateFiles } from "@grammyjs/files"
-import env from "@/config/env"
+import { videoNote } from "./video-note"
 
 export const VIDEO_CONVERSATION_NAME = "video"
 
-export const conversationHandler = async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
-    const file = ctx.message?.video ?? ctx.message?.animation ?? ctx.message?.document
+export const conversationHandler = async (conversation: BotConversation, ctx: BotContext) => {
+    const { file } = getVideo(ctx)
 
     if (!file) {
         await ctx.reply(ctx.t("error"))
@@ -32,32 +33,22 @@ export const conversationHandler = async (conversation: Conversation<Context, Bo
         reply_markup: keyboard
     })
 
-    const callbackCtx = await conversation.waitForCallbackQuery(["video:video-note", "video:to-gif", "video:cancel"])
+    const callbackCtx = await conversation.waitForCallbackQuery(Object.keys(handlers))
 
     await ctx.api.deleteMessage(ctx.chat!.id, callbackMessage.message_id)
 
-    const handler = handlers[callbackCtx.callbackQuery.data]
-
-    if (!handler) {
-        await ctx.reply("Invalid callback query")
-        return
-    }
-
-    await handler(conversation, ctx)
+    await handlers[callbackCtx.callbackQuery.data](conversation, ctx)
 }
 
-const handlers: Record<string, (conversation: Conversation<Context, BotContext>, ctx: BotContext) => Promise<void>> = {
+const handlers: Record<string, (conversation: BotConversation, ctx: BotContext) => Promise<void>> = {
     "video:video-note": videoNote,
     "video:to-gif": toGif,
-    "video:cancel": async (conversation: Conversation<Context, BotContext>, ctx: BotContext) => {
+    "video:cancel": async (conversation: BotConversation, ctx: BotContext) => {
         await ctx.reply(ctx.t("canceled"))
     }
 }
 
 export const videoConversation = createConversation(conversationHandler, {
     id: VIDEO_CONVERSATION_NAME,
-    plugins: [async (ctx, next) => {
-        ctx.api.config.use(hydrateFiles(env.BOT_TOKEN));
-        await next();
-    }]
+    ...conversationOptions,
 })
