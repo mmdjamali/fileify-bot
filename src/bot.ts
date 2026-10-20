@@ -187,8 +187,8 @@ const main = async () => {
     })
 
     bot.catch(async (err) => {
-        if (err instanceof AggregateError) {
-            err.errors.forEach((err) => {
+        if (err.error instanceof AggregateError) {
+            err.error.errors.forEach((err) => {
                 logger.error(err.message)
             })
         } else {
@@ -196,6 +196,10 @@ const main = async () => {
 
             console.log(err)
         }
+
+        try {
+            await err.ctx.reply(err.ctx.t("error"))
+        } catch { }
     })
 
     for (const locale of LOCALES) {
